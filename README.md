@@ -1,1 +1,1 @@
-# musician-store
+# The Musician Store
