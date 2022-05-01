@@ -1,1 +1,1 @@
-# The Musician's Store
+# Guitar Store
