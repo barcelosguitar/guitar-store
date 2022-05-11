@@ -74,7 +74,7 @@ public class GuitarDAO {
 		}
 	}
 
-	@SuppressWarnings("uncheked")
+	@SuppressWarnings("unchecked")
 	public List<Guitar> listAll() {
 		try {
 		    Query query = this.entityManager.createQuery("FROM Guitar entity");
