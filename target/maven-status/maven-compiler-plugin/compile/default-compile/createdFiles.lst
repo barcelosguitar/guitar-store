@@ -1,0 +1,6 @@
+br/com/barcelos_projects/enums/Model.class
+br/com/barcelos_projects/enums/Brand.class
+br/com/barcelos_projects/model/Guitar.class
+br/com/barcelos_projects/service/GuitarBean.class
+br/com/barcelos_projects/repository/GuitarDAO.class
+br/com/barcelos_projects/service/FileUploadView.class
