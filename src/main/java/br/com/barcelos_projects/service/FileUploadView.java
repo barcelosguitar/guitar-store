@@ -16,7 +16,6 @@ import org.primefaces.util.EscapeUtils;
 public class FileUploadView {
 
     private UploadedFile file;
-    private UploadedFiles files;
     private String dropZoneText = "Drop zone p:inputTextarea demo.";
 
     public void upload() {
