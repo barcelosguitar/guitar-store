@@ -35,7 +35,7 @@ public class GuitarBean implements Serializable{
 			newGuitar.setBrand(this.brand);
 			newGuitar.setPrice(this.price);
 			newGuitar.setUrlImg(this.urlImg);
-			
+
 			//if(newGuitar!=null)
 				this.guitarDAO.add(newGuitar);
 		//}

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,9 +25,11 @@ public class Guitar implements Serializable{
 	private String name;
 	@Column
 	private String description;
-	@Enumerated
+	@Column
+	@Enumerated (EnumType.STRING)
 	private Model model;
-	@Enumerated
+	@Column
+	@Enumerated (EnumType.STRING)
 	private Brand brand;
 	@Column
 	private Double price;
