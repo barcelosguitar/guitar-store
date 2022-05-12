@@ -30,7 +30,7 @@
     </init-param>
     <init-param>
       <param-name>uploadDirectory</param-name>
-      <param-value>/home/barcelos/git/guitar-store/src/main/webapp/img/guitars</param-value>
+      <param-value>../src/main/webapp/img/guitars</param-value>
     </init-param>
   </filter>
   <filter-mapping>
