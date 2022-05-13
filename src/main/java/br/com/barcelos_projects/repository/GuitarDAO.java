@@ -4,92 +4,134 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import br.com.barcelos_projects.model.Guitar;
+import javax.annotation.Resource;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import org.hibernate.Transaction;
 
 @Stateless
 public class GuitarDAO {
     
-    @PersistenceContext(unitName="guitarStorePersistenceUnit")
-	private EntityManager entityManager;
+    @PersistenceUnit
+    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
+    @Resource
+    private Transaction utx;
 
     public void add(Guitar guitar) {
-		try {
-			entityManager.persist(guitar);
-		
-		} catch (Exception e) {
-			System.out.println("GuitarDAO.add: " + e.getMessage());
-			throw e;
-		}
-	}
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            
+            utx.begin();
+            entityManager.persist(guitar);
+            utx.commit();
 
-	public Guitar findById(Guitar object) {
-		try {
+        } catch (Exception e) {
+            System.out.println("GuitarDAO.add: " + e.getMessage());
+            utx.rollback();
+            //throw e;
+        } finally {
+            if (entityManager != null) {
+                entityManagerFactory.close();
+                entityManager.close();
+            }
+        }
+    }
 
-            Query query = this.entityManager.createQuery("FROM Guitar entity WHERE entity.id =: id");
-            Guitar guitar = (Guitar) query.getSingleResult();
+    public Guitar findById(Guitar object) {
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            
+            //Query query = this.entityManager.createQuery("FROM Guitar entity WHERE entity.id =: id");
+            utx.begin();
+            Guitar guitar = entityManager.find(Guitar.class, object.getId());
+            utx.commit();
 
-			return guitar;
-		} catch (NullPointerException n) {
-			return null;
-		} catch (Exception e) {
-			System.out.println("GlobalDAO.findById: " + e.getMessage());
-			throw e;
-		}
-	}
+            return guitar;
+        } catch (NullPointerException n) {
+            return null;
+        } catch (Exception e) {
+            System.out.println("GlobalDAO.findById: " + e.getMessage());
+            utx.rollback();
+            //throw e;
+        } finally {
+            if (entityManager != null) {
+                entityManagerFactory.close();
+                entityManager.close();
+            }
+        }
+        return null;
+    }
 
-	public void delete(Guitar object) {
-		try {
-            Query query = this.entityManager.createQuery("FROM Guitar entity WHERE entity.id=:id");
-			query.setParameter("id", object.getId());
+    public void delete(Guitar object){
+        try {
+            /*Query query = this.entityManager.createQuery("FROM Guitar entity WHERE entity.id=:id");
+            query.setParameter("id", object.getId());
 
-            Guitar guitar = (Guitar) query.getSingleResult();
+            Guitar guitar = (Guitar) query.getSingleResult();*/
+            entityManager = entityManagerFactory.createEntityManager();
+            
+            Guitar guitar = entityManager.find(Guitar.class, object.getId());
+            
+            utx.begin();
+            entityManager.remove(guitar);
+            utx.commit();
 
-			entityManager.remove(guitar);
+        } catch (Exception e) {
+            System.out.println("GlobalDAO.delete: " + e.getMessage());
+            //throw e;
+            utx.rollback();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
+    }
 
-		} catch (Exception e) {
-			System.out.println("GlobalDAO.delete: " + e.getMessage());
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-	}
+    public void update(Guitar object) {
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            
+            utx.begin();
+            entityManager.merge(object);
+            utx.commit();
 
-	public void update(Guitar object) {
-		try {
+        } catch (Exception e) {
+            System.out.println("GuitarDAO.update: " + e.getMessage());
+            utx.rollback();
+            //throw e;
+        } finally {
+            if (entityManager != null) {
+                entityManagerFactory.close();
+                entityManager.close();
+            }
+        }
+    }
 
-			entityManager.merge(object);
+    @SuppressWarnings("unchecked")
+    public List<Guitar> listAll() {
+        try {       
+            utx.begin();
+            Query query = this.entityManager.createQuery("FROM Guitar entity");
+            List<Guitar> guitars = query.getResultList();
+            utx.commit();
 
-		} catch (Exception e) {
-			System.out.println("GuitarDAO.update: " + e.getMessage());
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Guitar> listAll() {
-		try {
-		    Query query = this.entityManager.createQuery("FROM Guitar entity");
-		    List<Guitar> guitars = query.getResultList();
-		
-		    return guitars;
-		} catch (NullPointerException n) {
-			return null;
-		} catch (Exception e) {
-			System.out.println("GlobalDAO.listAll: " + e.getMessage());
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-	}
+            return guitars;
+        } catch (NullPointerException n) {
+            return null;
+        } catch (Exception e) {
+            System.out.println("GlobalDAO.listAll: " + e.getMessage());
+            utx.rollback();
+            //throw e;
+        } finally {
+            if (entityManager != null) {
+                entityManagerFactory.close();
+                entityManager.close();
+            }
+        }
+        return null;
+    }
 }

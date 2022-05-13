@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import br.com.barcelos_projects.enums.Brand;
 import br.com.barcelos_projects.enums.Model;
+import javax.persistence.Lob;
 
 
 @Entity
@@ -33,16 +34,17 @@ public class Guitar implements Serializable{
 	private Brand brand;
 	@Column
 	private Double price;
-	@Column (name="url_img")
-	private String urlImg;
+	@Lob
+        @Column(name="img", nullable=false, columnDefinition="mediumblob")
+	private byte[] img;
 	
-	public Guitar(String name, String description, Model model, Brand brand, double price, String urlImg) {
+	public Guitar(String name, String description, Model model, Brand brand, double price, byte[] img) {
 		this.name = name;
 		this.description = description;
 		this.model = model;
 		this.brand = brand;
 		this.price = price;
-		this.urlImg = urlImg;
+		this.img = img;
 	}
 	public Guitar() {}
 	
@@ -82,10 +84,10 @@ public class Guitar implements Serializable{
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public String getUrlImg() {
-		return urlImg;
+	public byte[] getImg() {
+		return img;
 	}
-	public void setUrlImg(String urlImg) {
-		this.urlImg = urlImg;
+	public void setImg(byte[] img) {
+		this.img = img;
 	}
 }

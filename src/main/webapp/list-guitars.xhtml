@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit this template
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+        lang="pt-br">
+    <h:head>
+        <title>Guitar Store | Guitars</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <div class="card product">
+            
+            <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
+            
+            <h:form id="form">
+                <p:dataView var="guitar" value="#{guitar.guitars}" rows="12" paginator="true"
+                            rowsPerPageTemplate="6,12,16"
+                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+
+                    <p:dataViewGridItem>
+                        <div class="product-grid-item card border-1">
+                            <div class="product-grid-item-top">
+                                <div>
+                                    <i class="pi pi-tag product-category-icon"/>
+                                    <span class="product-category">#{guitar.model}</span>
+                                </div>
+                                <!-- span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span -->
+                            </div>
+                            <div class="product-grid-item-content">
+                                <p:graphicImage name="#{guitar.img}" library="demo"/>
+                                <div class="product-name">#{guitar.name}</div>
+                                <div class="product-description">#{guitar.description}</div>
+                                <!-- p:rating readonly="true" value="#{product.rating}"/ -->
+                            </div>
+                            <div class="product-grid-item-bottom">
+                                <h:outputText value="#{guitar.price}" styleClass="product-price">
+                                    <f:convertNumber currencySymbol="R$" type="currency"/>
+                                </h:outputText>
+                                <p:commandButton type="button"
+                                                    value="Add To Cart"
+                                                    icon="pi pi-shopping-cart">
+                                                    <!-- disabled="#{product.inventoryStatus == 'OUTOFSTOCK'}" -->
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dataViewGridItem>
+
+                    <p:dataViewListItem>
+                        <div class="product-list-item">
+                            <p:graphicImage name="#{guitar.img}"/>
+                            <div class="product-list-detail">
+                                <div class="product-name">#{guitar.name}</div>
+                                <div class="product-description">#{guitar.description}</div>
+                                <!-- p:rating readonly="true" value="#{product.rating}"/ -->
+                                <i class="pi pi-tag product-category-icon"/><span
+                                    class="product-category">#{guitar.model}</span>
+                            </div>
+                            <div class="product-list-action">
+                                <h:outputText value="#{guitar.price}" styleClass="product-price">
+                                    <f:convertNumber currencySymbol="R$" type="currency"/>
+                                </h:outputText>
+                                <p:commandButton type="button"
+                                                 value="Add To Cart"
+                                                 icon="pi pi-shopping-cart" >
+                                                 <!-- disabled="#{product.inventoryStatus == 'OUTOFSTOCK'}" -->
+                                </p:commandButton>
+                                <!--span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span -->
+                            </div>
+                        </div>
+                    </p:dataViewListItem>
+                </p:dataView>
+            </h:form>
+        </div>
+    </h:body>
+</html>
