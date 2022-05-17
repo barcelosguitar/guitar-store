@@ -7,63 +7,59 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import br.com.barcelos_projects.model.Guitar;
-import javax.annotation.Resource;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import org.hibernate.Transaction;
+import javax.persistence.PersistenceContext;
 
 @Stateless
 public class GuitarDAO {
     
-    @PersistenceUnit
-    private EntityManagerFactory entityManagerFactory;
+    @PersistenceContext(unitName = "guitarStorePersistenceUnit")
+    //private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
-    @Resource
-    private Transaction utx;
+    //private Transaction utx;
 
     public void add(Guitar guitar) {
         try {
-            entityManager = entityManagerFactory.createEntityManager();
+            //entityManager = entityManagerFactory.createEntityManager();
             
-            utx.begin();
+            //utx.begin();
             entityManager.persist(guitar);
-            utx.commit();
+            //utx.commit();
 
         } catch (Exception e) {
             System.out.println("GuitarDAO.add: " + e.getMessage());
-            utx.rollback();
-            //throw e;
-        } finally {
+            //utx.rollback();
+            throw e;
+        } /*finally {
             if (entityManager != null) {
                 entityManagerFactory.close();
                 entityManager.close();
             }
-        }
+        }*/
     }
 
     public Guitar findById(Guitar object) {
         try {
-            entityManager = entityManagerFactory.createEntityManager();
+            //entityManager = entityManagerFactory.createEntityManager();
             
             //Query query = this.entityManager.createQuery("FROM Guitar entity WHERE entity.id =: id");
-            utx.begin();
+            //utx.begin();
             Guitar guitar = entityManager.find(Guitar.class, object.getId());
-            utx.commit();
+            //utx.commit();
 
             return guitar;
         } catch (NullPointerException n) {
             return null;
         } catch (Exception e) {
             System.out.println("GlobalDAO.findById: " + e.getMessage());
-            utx.rollback();
-            //throw e;
-        } finally {
+            //utx.rollback();
+            throw e;
+        } /*finally {
             if (entityManager != null) {
                 entityManagerFactory.close();
                 entityManager.close();
             }
-        }
-        return null;
+        }*/
+        //return null;
     }
 
     public void delete(Guitar object){
@@ -72,66 +68,66 @@ public class GuitarDAO {
             query.setParameter("id", object.getId());
 
             Guitar guitar = (Guitar) query.getSingleResult();*/
-            entityManager = entityManagerFactory.createEntityManager();
+            //entityManager = entityManagerFactory.createEntityManager();
             
             Guitar guitar = entityManager.find(Guitar.class, object.getId());
             
-            utx.begin();
+            //utx.begin();
             entityManager.remove(guitar);
-            utx.commit();
+            //utx.commit();
 
         } catch (Exception e) {
             System.out.println("GlobalDAO.delete: " + e.getMessage());
-            //throw e;
-            utx.rollback();
-        } finally {
-            if (entityManager != null) {
+            throw e;
+            //utx.rollback();
+        } /*finally {            if (entityManager != null) {
                 entityManager.close();
             }
-        }
+        }*/
     }
 
     public void update(Guitar object) {
         try {
-            entityManager = entityManagerFactory.createEntityManager();
+            //entityManager = entityManagerFactory.createEntityManager();
             
-            utx.begin();
+            //utx.begin();
             entityManager.merge(object);
-            utx.commit();
+            //utx.commit();
 
         } catch (Exception e) {
             System.out.println("GuitarDAO.update: " + e.getMessage());
-            utx.rollback();
+            //utx.rollback();
             //throw e;
-        } finally {
+        } /*finally {
             if (entityManager != null) {
                 entityManagerFactory.close();
                 entityManager.close();
             }
-        }
+        }*/
     }
 
     @SuppressWarnings("unchecked")
     public List<Guitar> listAll() {
         try {       
-            utx.begin();
+            //utx.begin();
+            
             Query query = this.entityManager.createQuery("FROM Guitar entity");
-            List<Guitar> guitars = query.getResultList();
-            utx.commit();
+            List<Guitar> guitars = (List<Guitar>) query.getResultList();
+            //utx.commit();
 
             return guitars;
         } catch (NullPointerException n) {
             return null;
         } catch (Exception e) {
             System.out.println("GlobalDAO.listAll: " + e.getMessage());
-            utx.rollback();
-            //throw e;
-        } finally {
+            //utx.rollback();
+            throw e;
+        } /*finally {
             if (entityManager != null) {
                 entityManagerFactory.close();
                 entityManager.close();
             }
-        }
-        return null;
+        }*/
+        //return null;
     }
 }

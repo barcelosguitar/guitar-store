@@ -48,7 +48,7 @@ public class FileUpload {
         
         try {
            
-            Path folder = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\img\\guitars");
+            Path folder = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
             String filename = file.getFileName(); 
             String extension = FilenameUtils.getExtension(file.getFileName());
             Path filePath = Files.createTempFile(folder, filename + "-", "." + extension);
