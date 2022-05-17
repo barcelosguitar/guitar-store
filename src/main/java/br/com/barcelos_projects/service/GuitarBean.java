@@ -1,32 +1,28 @@
 package br.com.barcelos_projects.service;
 
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import br.com.barcelos_projects.enums.Brand;
 import br.com.barcelos_projects.enums.Model;
 import br.com.barcelos_projects.model.Guitar;
 import br.com.barcelos_projects.repository.GuitarDAO;
+import jakarta.annotation.PostConstruct;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
-import org.apache.commons.io.FilenameUtils;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.file.UploadedFile;
-
-@RequestScoped
+@SessionScoped
 @Named ("guitar")
 public class GuitarBean implements Serializable{
 
@@ -35,35 +31,24 @@ public class GuitarBean implements Serializable{
         private Model model;
         private Brand brand;
         private Double price;
-        private String img;
+        private StreamedContent img;
 
         @Inject
         private GuitarDAO guitarDAO;
-        
-        private UploadedFile file;
-        private List<Guitar> guitars;
+        //private List<Guitar> guitars;
 
-        private Path folder = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
+        //private Path linuxPath = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
+        private Path winPath = Paths.get("C:\\Users\\Usuário\\Pictures\\GuitarStore\\guitars");
 
-        public void handleImgUpload(FileUploadEvent event) {
-                file = event.getFile();
-
-                FacesMessage msg = new FacesMessage("Sucesso", event.getFile().getFileName() + " foi enviado.");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
-
-                        try {
-                                String fileName = FilenameUtils.getName(file.getFileName());
-                                String extension = FilenameUtils.getExtension(file.getFileName());
-                                Path filePath = Files.createTempFile(folder, fileName + "-", "." + extension);
-
-                                InputStream input = file.getInputStream();
-                                Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
-                                
-                        } catch (IOException e){
-                                e.getMessage();
-                        }
-        }
-
+        /*@PostConstruct
+        public void init(){
+                try {
+                        
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+                
+        }*/
         public void addGuitar() {
         //if(name!=null && description!=null && model!=null && brand!=null && price!=0.0) {
                 Guitar newGuitar = new Guitar();
@@ -73,24 +58,20 @@ public class GuitarBean implements Serializable{
                 newGuitar.setBrand(this.brand);
                 newGuitar.setPrice(this.price);
 
-                File newFile = new File(folder.toString());
+                File newFile = new File(winPath.toString());
                 File[] list = newFile.listFiles();
 
                 for(File f : list){
                         if(f.setLastModified(System.currentTimeMillis())){
-                                newGuitar.setImg(f.getAbsolutePath());
+                                newGuitar.setImg(f.getPath());
                         }
-                }
-                
+                }           
                 //if(newGuitar!=null)
                 this.guitarDAO.add(newGuitar);
                 //}
         }
-        public List<Guitar> getGuitars(){
-                guitars = guitarDAO.listAll();
-                return guitars;
-        }
-
+        
+        
         public String getName() {
                 return name;
         }
@@ -121,10 +102,15 @@ public class GuitarBean implements Serializable{
         public void setPrice(Double price) {
                 this.price = price;
         }
-        public String getImg() {
-                return img;
+        //TODO:
+        public StreamedContent getImg () {
+                Guitar findGuitar = guitarDAO.findByIdLong(id);
+                if(findGuitar.getId().equals(id)){
+                        InputStream input = this.getClass().getResourceAsStream(findGuitar.getImg());
+                        return new DefaultStreamedContent(input);
+                }   
         }
-        public void setImg(String img) {
+        public void setImg(StreamedContent img) {
                 this.img = img;
         }
 }

@@ -30,6 +30,8 @@ public class FileUpload {
     
     private UploadedFile file;
     private String dropZoneText = "Drop zone p:inputTextarea demo.";
+    //private Path linuxPath = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
+    private Path winPath = Paths.get("C:\\Users\\Usuário\\Pictures\\GuitarStore\\guitars");
     
     public void upload(FileUploadEvent event) {
         
@@ -46,12 +48,10 @@ public class FileUpload {
         FacesMessage msg = new FacesMessage("Sucesso", event.getFile().getFileName() + " foi enviado.");
         FacesContext.getCurrentInstance().addMessage(null, msg);
         
-        try {
-           
-            Path folder = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
+        try {        
             String filename = file.getFileName(); 
             String extension = FilenameUtils.getExtension(file.getFileName());
-            Path filePath = Files.createTempFile(folder, filename + "-", "." + extension);
+            Path filePath = Files.createTempFile(winPath, filename + "-", "." + extension);
             
             InputStream input = file.getInputStream();
             Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);

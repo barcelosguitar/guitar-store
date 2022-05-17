@@ -21,8 +21,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
             
             <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
             
-            <h:form id="form">
-                <p:dataView var="guitar" value="#{guitar.guitars}" rows="12" paginator="true"
+            <h:form>
+                <p:dataView value="#{guitarDataView.guitars}" var="guitar" rows="12" paginator="true"
                             rowsPerPageTemplate="6,12,16"
                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             gridIcon="pi pi-th-large" listIcon="pi pi-bars">
@@ -31,20 +31,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
                         <div class="product-grid-item card border-1">
                             <div class="product-grid-item-top">
                                 <div>
-                                    <i class="pi pi-tag product-category-icon"/>
+                                    <i class="pi pi-tag product-category-icon" />
                                     <span class="product-category">#{guitar.model}</span>
                                 </div>
                                 <!-- span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span -->
                             </div>
                             <div class="product-grid-item-content">
-                                <p:graphicImage name="#{guitar.img}" library="demo"/>
+                                <p:graphicImage library="C:\\Users\\Usuário\\Pictures\\GuitarStore\\guitars\\" name="#{guitar.img}" />
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>
                                 <!-- p:rating readonly="true" value="#{product.rating}"/ -->
                             </div>
                             <div class="product-grid-item-bottom">
                                 <h:outputText value="#{guitar.price}" styleClass="product-price">
-                                    <f:convertNumber currencySymbol="R$" type="currency"/>
+                                    <f:convertNumber currencySymbol="R$" type="currency" />
                                 </h:outputText>
                                 <p:commandButton type="button"
                                                     value="Add To Cart"
@@ -57,12 +57,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
 
                     <p:dataViewListItem>
                         <div class="product-list-item">
-                            <p:graphicImage name="#{guitar.img}"/>
+                            <p:graphicImage value="#{guitar.img}" />
                             <div class="product-list-detail">
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>
                                 <!-- p:rating readonly="true" value="#{product.rating}"/ -->
-                                <i class="pi pi-tag product-category-icon"/><span
+                                <i class="pi pi-tag product-category-icon" /><span
                                     class="product-category">#{guitar.model}</span>
                             </div>
                             <div class="product-list-action">
