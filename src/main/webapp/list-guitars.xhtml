@@ -24,10 +24,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
 
                 <p:messages id="messages"/>
 
-                <p:commandButton value="Clear multiViewSate" action="#{guitarDataView.clearMultiViewState()}"
+                <p:commandButton value="Clear multiViewSate" action="#{guitarBean.clearMultiViewState()}"
                                 update="@form" styleClass="p-mb-5" />
 
-                <p:dataView var="guitar" value="#{guitarDataView.guitars}" multiViewState="true" rows="12" 
+                <p:dataView var="guitar" value="#{guitarBean.guitars}" multiViewState="true" rows="12" 
                             paginator="true"
                             rowsPerPageTemplate="6,12,16"
                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -43,7 +43,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
                                 <!-- span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span -->
                             </div>
                             <div class="product-grid-item-content">
-                                <p:graphicImage name="/home/barcelos/Pictures/GuitarStore/guitars/#{guitar.img}" library="guitars" />
+                                <p:graphicImage value="#{guitar.img}" />
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>
                                 <!-- p:rating readonly="true" value="#{product.rating}"/ -->
@@ -63,7 +63,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
 
                     <p:dataViewListItem>
                         <div class="product-list-item">
-                            <p:graphicImage name="/home/barcelos/Pictures/GuitarStore/guitars/#{guitar.img}" library="guitars" />
+                            <p:graphicImage value="#{guitar.img}" />
                             <div class="product-list-detail">
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>

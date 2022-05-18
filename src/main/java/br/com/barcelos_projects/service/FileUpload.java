@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.com.barcelos_projects.service;
 
 import java.io.IOException;
@@ -20,25 +16,21 @@ import org.primefaces.model.file.UploadedFile;
 import org.primefaces.shaded.commons.io.FilenameUtils;
 import org.primefaces.util.EscapeUtils;
 
-/**
- *
- * @author barcelos
- */
 @RequestScoped
 @Named ("fileUpload")
 public class FileUpload {
     
     private UploadedFile file;
     private String dropZoneText = "Drop zone p:inputTextarea demo.";
-    private Path linuxPath = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
-    //private Path winPath = Paths.get("C:\\Users\\Usuário\\Pictures\\GuitarStore\\guitars");
+    //private Path linuxPath = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
+    private Path winPath = Paths.get("src\\main\\resources\\tmp");
     
     public void upload(FileUploadEvent event) {
         
         file = event.getFile();
 
         if (file != null) {
-            FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
+            FacesMessage message = new FacesMessage("Sucesso", file.getFileName() + " foi enviado.");
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
@@ -51,7 +43,7 @@ public class FileUpload {
         try {        
             String filename = file.getFileName(); 
             String extension = FilenameUtils.getExtension(file.getFileName());
-            Path filePath = Files.createTempFile(linuxPath, filename + "-", "." + extension);
+            Path filePath = Files.createTempFile(winPath, filename + "-", "." + extension);
             
             InputStream input = file.getInputStream();
             Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -63,7 +55,7 @@ public class FileUpload {
     public void handleFileUploadTextarea(FileUploadEvent event) {
         String jsVal = "PF('textarea').jq.val";
         String fileName = EscapeUtils.forJavaScript(event.getFile().getFileName());
-        PrimeFaces.current().executeScript(jsVal + "(" + jsVal + "() + '\\n\\n" + fileName + " uploaded.')");
+        PrimeFaces.current().executeScript(jsVal + "(" + jsVal + "() + '\\n\\n" + fileName + " Enviado.')");
     }
 
     public UploadedFile getFile() {

@@ -9,11 +9,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import br.com.barcelos_projects.enums.Brand;
 import br.com.barcelos_projects.enums.Model;
-
 
 @Entity
 @Table (name="guitar")
@@ -21,8 +21,6 @@ public class Guitar implements Serializable{
 	
 	@Id @GeneratedValue (strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column
-	private String code;
 	@Column
 	private String name;
 	@Column
@@ -35,10 +33,10 @@ public class Guitar implements Serializable{
 	private Brand brand;
 	@Column
 	private Double price;
-	@Column
-	private String img;
+	@Lob @Column
+	private byte[] img;
 	
-	public Guitar(String name, String description, Model model, Brand brand, double price, String img) {
+	public Guitar(String name, String description, Model model, Brand brand, double price, byte[] img) {
 		this.name = name;
 		this.description = description;
 		this.model = model;
@@ -84,43 +82,10 @@ public class Guitar implements Serializable{
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public String getImg() {
+	public byte[] getImg() {
 		return img;
 	}
-	public void setImg(String img) {
+	public void setImg(byte[] img) {
 		this.img = img;
 	}
-	public String getCode(){
-		return code;
-	}
-	public void setCode(String code){
-		this.code = code;
-	}
-	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((code == null) ? 0 : code.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Guitar other = (Guitar) obj;
-        if (code == null) {
-            return other.code == null;
-        }
-        else {
-            return code.equals(other.code);
-        }
-    }
 }

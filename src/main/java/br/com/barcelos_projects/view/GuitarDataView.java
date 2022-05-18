@@ -1,10 +1,11 @@
 package br.com.barcelos_projects.view;
 
 import java.io.Serializable;
-import java.util.List;
+/*import java.util.List;
 
 import br.com.barcelos_projects.model.Guitar;
 import br.com.barcelos_projects.repository.GuitarDAO;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -18,12 +19,12 @@ import org.primefaces.PrimeFaces;
 
 
 @ViewScoped
-@Named ("guitarDataView")
+@Named ("guitarDataView")*/
 public class GuitarDataView implements Serializable {
 
-    private List<Guitar> guitars;
+    /*private List<Guitar> guitars;
 
-    @Alternative
+    @Inject
     private GuitarDAO guitarDAO;
 
     @PostConstruct
@@ -48,5 +49,5 @@ public class GuitarDataView implements Serializable {
         FacesContext.getCurrentInstance()
                 .addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, clientId + " multiview state has been cleared out", null));
-    }
+    }*/
 }

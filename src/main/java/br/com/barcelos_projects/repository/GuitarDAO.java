@@ -2,16 +2,17 @@ package br.com.barcelos_projects.repository;
 
 import java.util.List;
 
+import br.com.barcelos_projects.model.Guitar;
+
+import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import br.com.barcelos_projects.model.Guitar;
-import jakarta.ejb.Stateful;
-import jakarta.ejb.Stateless;
 
-import javax.persistence.PersistenceContext;
 
 @Stateful
+//@ApplicationScoped
 public class GuitarDAO {
     
     @PersistenceContext(unitName = "guitarStorePersistenceUnit")
@@ -37,27 +38,6 @@ public class GuitarDAO {
             throw e;
         }
     }
-    public Guitar findByIdLong(Long id) {
-        try {
-            Guitar guitar = entityManager.find(Guitar.class, id);
-
-            return guitar;
-        } catch (NullPointerException n) {
-            return null;
-        } catch (Exception e) {
-            System.out.println("GlobalDAO.findById: " + e.getMessage());
-            throw e;
-        }
-    }
-    public String getGuitarImg(Guitar object){
-        try {
-            
-            return "s";
-        } catch (Exception e) {
-            //TODO: handle exception
-        }
-        return null;
-    }
     public void delete(Guitar object){
         try {
             Guitar guitar = entityManager.find(Guitar.class, object.getId());         
@@ -75,7 +55,6 @@ public class GuitarDAO {
             throw e;
         }
     }
-
     @SuppressWarnings("unchecked")
     public List<Guitar> listGuitars() {
         try {        
