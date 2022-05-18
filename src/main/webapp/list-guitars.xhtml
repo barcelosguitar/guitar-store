@@ -17,12 +17,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        <div class="card product">
-            
-            <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
-            
-            <h:form>
-                <p:dataView value="#{guitarDataView.guitars}" var="guitar" rows="12" paginator="true"
+        <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
+
+        <div class="card product">    
+            <h:form id="form">
+
+                <p:messages id="messages"/>
+
+                <p:commandButton value="Clear multiViewSate" action="#{guitarDataView.clearMultiViewState()}"
+                                update="@form" styleClass="p-mb-5" />
+
+                <p:dataView var="guitar" value="#{guitarDataView.guitars}" multiViewState="true" rows="12" 
+                            paginator="true"
                             rowsPerPageTemplate="6,12,16"
                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             gridIcon="pi pi-th-large" listIcon="pi pi-bars">
@@ -37,7 +43,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
                                 <!-- span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span -->
                             </div>
                             <div class="product-grid-item-content">
-                                <p:graphicImage library="C:\\Users\\Usuário\\Pictures\\GuitarStore\\guitars\\" name="#{guitar.img}" />
+                                <p:graphicImage name="/home/barcelos/Pictures/GuitarStore/guitars/#{guitar.img}" library="guitars" />
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>
                                 <!-- p:rating readonly="true" value="#{product.rating}"/ -->
@@ -57,7 +63,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
 
                     <p:dataViewListItem>
                         <div class="product-list-item">
-                            <p:graphicImage value="#{guitar.img}" />
+                            <p:graphicImage name="/home/barcelos/Pictures/GuitarStore/guitars/#{guitar.img}" library="guitars" />
                             <div class="product-list-detail">
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>
