@@ -2,14 +2,16 @@ package br.com.barcelos_projects.repository;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import br.com.barcelos_projects.model.Guitar;
+import jakarta.ejb.Stateful;
+import jakarta.ejb.Stateless;
+
 import javax.persistence.PersistenceContext;
 
-@Stateless
+@Stateful
 public class GuitarDAO {
     
     @PersistenceContext(unitName = "guitarStorePersistenceUnit")
@@ -23,7 +25,6 @@ public class GuitarDAO {
             throw e;
         }
     }
-
     public Guitar findById(Guitar object) {
         try {
             Guitar guitar = entityManager.find(Guitar.class, object.getId());
@@ -66,7 +67,6 @@ public class GuitarDAO {
             throw e;
         }
     }
-
     public void update(Guitar object) {
         try {
             entityManager.merge(object);
@@ -85,6 +85,17 @@ public class GuitarDAO {
             return guitars;
         } catch (Exception e) {
             System.out.println("GuitarDAO.listAll: " + e.getMessage());
+            throw e;
+        }
+    }
+    public List<Guitar> listRandomGuitars (){
+        try {
+            Query query = this.entityManager.createNativeQuery("SELECT *FROM guitar ORDER BY RAND() LIMIT 12");
+            List<Guitar> guitars = (List<Guitar>) query.getResultList();
+
+            return guitars;
+        } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
     }

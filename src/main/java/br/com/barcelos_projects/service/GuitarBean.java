@@ -5,22 +5,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.enterprise.context.SessionScoped;
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 import br.com.barcelos_projects.enums.Brand;
 import br.com.barcelos_projects.enums.Model;
 import br.com.barcelos_projects.model.Guitar;
 import br.com.barcelos_projects.repository.GuitarDAO;
-import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
 
 import java.io.File;
-import java.io.InputStream;
-import java.util.List;
 
 @SessionScoped
 @Named ("guitar")
@@ -31,14 +26,14 @@ public class GuitarBean implements Serializable{
         private Model model;
         private Brand brand;
         private Double price;
-        private StreamedContent img;
+        private String img;
 
         @Inject
         private GuitarDAO guitarDAO;
         //private List<Guitar> guitars;
 
-        //private Path linuxPath = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
-        private Path winPath = Paths.get("C:\\Users\\Usuário\\Pictures\\GuitarStore\\guitars");
+        private Path linuxPath = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
+        //private Path winPath = Paths.get("C:\\Users\\Usuário\\Pictures\\GuitarStore\\guitars");
 
         /*@PostConstruct
         public void init(){
@@ -58,7 +53,7 @@ public class GuitarBean implements Serializable{
                 newGuitar.setBrand(this.brand);
                 newGuitar.setPrice(this.price);
 
-                File newFile = new File(winPath.toString());
+                File newFile = new File(linuxPath.toString());
                 File[] list = newFile.listFiles();
 
                 for(File f : list){
@@ -102,15 +97,10 @@ public class GuitarBean implements Serializable{
         public void setPrice(Double price) {
                 this.price = price;
         }
-        //TODO:
-        public StreamedContent getImg () {
-                Guitar findGuitar = guitarDAO.findByIdLong(id);
-                if(findGuitar.getId().equals(id)){
-                        InputStream input = this.getClass().getResourceAsStream(findGuitar.getImg());
-                        return new DefaultStreamedContent(input);
-                }   
+        public String getImg () {
+                return img;
         }
-        public void setImg(StreamedContent img) {
+        public void setImg(String img) {
                 this.img = img;
         }
 }
