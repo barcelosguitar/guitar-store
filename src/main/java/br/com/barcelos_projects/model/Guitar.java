@@ -33,10 +33,10 @@ public class Guitar implements Serializable{
 	private Brand brand;
 	@Column
 	private Double price;
-	@Lob @Column
-	private byte[] img;
+	@Column
+	private String img;
 	
-	public Guitar(String name, String description, Model model, Brand brand, double price, byte[] img) {
+	public Guitar(String name, String description, Model model, Brand brand, double price, String img) {
 		this.name = name;
 		this.description = description;
 		this.model = model;
@@ -82,10 +82,10 @@ public class Guitar implements Serializable{
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public byte[] getImg() {
+	public String getImg() {
 		return img;
 	}
-	public void setImg(byte[] img) {
+	public void setImg(String img) {
 		this.img = img;
 	}
 }

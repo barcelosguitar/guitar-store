@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.barcelos_projects.enums.Brand;
@@ -11,11 +12,15 @@ import br.com.barcelos_projects.enums.Model;
 import br.com.barcelos_projects.model.Guitar;
 import br.com.barcelos_projects.repository.GuitarDAO;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import com.rometools.rome.feed.rss.Image;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
@@ -25,7 +30,10 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @SessionScoped
 @Named ("guitarBean")
@@ -36,46 +44,44 @@ public class GuitarBean implements Serializable{
         private Model model;
         private Brand brand;
         private Double price;
-        private StreamedContent img;
+        private String img;
         
         @Inject
         private GuitarDAO guitarDAO;
-        //private Path linuxPath = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
-        private Path winPath = Paths.get("src\\main\\resources\\tmp");
+        private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resourcers/img/");
+        private String absolutePath;
+        //private Path winPath = Paths.get("src\\main\\resources\\tmp");
 
-        /*@PostConstruct
-        public void init(){
+        public void addGuitar() {
                 try {
-                        this.guitars = guitarDAO.listRandomGuitars();
+                        Guitar newGuitar = new Guitar();
+                        newGuitar.setName(this.name);
+                        newGuitar.setDescription(this.description);
+                        newGuitar.setModel(this.model);
+                        newGuitar.setBrand(this.brand);
+                        newGuitar.setPrice(this.price);
+
+                        File newFile = new File(linuxPath.toString());
+                        File[] list = newFile.listFiles();
+
+                        for(File f : list){
+                                if(f.setLastModified(System.currentTimeMillis())){
+                                        absolutePath = f.getName();
+                                        newGuitar.setImg(absolutePath);
+                                }
+                        }           
+
+                        this.guitarDAO.add(newGuitar);
+
+                        /*for(File f : list){
+                                if(f.setLastModified(System.currentTimeMillis())){
+                                        f.delete();
+                                }
+                        }*/
+                
                 } catch (Exception e) {
                         e.printStackTrace();
-                }    
-        }*/
-        public void addGuitar() throws IOException {
-
-                Guitar newGuitar = new Guitar();
-                newGuitar.setName(this.name);
-                newGuitar.setDescription(this.description);
-                newGuitar.setModel(this.model);
-                newGuitar.setBrand(this.brand);
-                newGuitar.setPrice(this.price);
-
-                File newFile = new File(winPath.toString());
-                File[] list = newFile.listFiles();
-
-                for(File f : list){
-                        if(f.setLastModified(System.currentTimeMillis())){
-                                newGuitar.setImg(Files.readAllBytes(f.toPath()));
-                        }
-                }           
-
-                this.guitarDAO.add(newGuitar);
-                
-                for(File f : list){
-                        if(f.setLastModified(System.currentTimeMillis())){
-                                f.delete();
-                        }
-                }  
+                }
         }
         
         public List<Guitar> getGuitars(){
@@ -84,22 +90,21 @@ public class GuitarBean implements Serializable{
         public List<Guitar> getRandomGuitarList(){
                 return this.guitarDAO.listRandomGuitars();
         }
-        public StreamedContent getFoto(Guitar guitar){
-
-                Guitar findGuitar = guitarDAO.findById(guitar);
-
-                String id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("image_id");
-
+        /*public StreamedContent getFoto(){
+                File foto = new File("suafoto.jpg");
+                DefaultStreamedContent content=null;
                 try{
-                    BufferedInputStream in = new BufferedInputStream(new FileInputStream(img));
-                    in.read(findGuitar.getImg());
+                    BufferedInputStream in = new BufferedInputStream(new FileInputStream(foto));
+                    byte[] bytes = new byte[in.available()];
+                    in.read(bytes);
                     in.close();
-                    content = new DefaultStreamedContent(new ByteArrayInputStream(findGuitar.getImg()), " ");
+                    content = new DefaultStreamedContent();
                 }catch(Exception e){
                     e.printStackTrace();
                 }
                 return content;
-        }
+        }*/
+        
         public String getName() {
                 return name;
         }
@@ -130,7 +135,7 @@ public class GuitarBean implements Serializable{
         public void setPrice(Double price) {
                 this.price = price;
         }
-        public String getImg () {
+        public String getImg(){
                 return img;
         }
         public void setImg(String img) {

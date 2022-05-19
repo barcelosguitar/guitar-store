@@ -1,5 +1,6 @@
 package br.com.barcelos_projects.service;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -22,8 +23,8 @@ public class FileUpload {
     
     private UploadedFile file;
     private String dropZoneText = "Drop zone p:inputTextarea demo.";
-    //private Path linuxPath = Paths.get("/home/barcelos/Pictures/GuitarStore/guitars");
-    private Path winPath = Paths.get("src\\main\\resources\\tmp");
+    private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resourcers/img/");
+    //private Path winPath = Paths.get("src\\main\\resources\\tmp");
     
     public void upload(FileUploadEvent event) {
         
@@ -41,13 +42,13 @@ public class FileUpload {
         FacesContext.getCurrentInstance().addMessage(null, msg);
         
         try {        
-            String filename = file.getFileName(); 
-            String extension = FilenameUtils.getExtension(file.getFileName());
-            Path filePath = Files.createTempFile(winPath, filename + "-", "." + extension);
+            String filename = file.getFileName();
+            Path filePath = Files.createTempFile(linuxPath, "" + "", ".png");
             
             InputStream input = file.getInputStream();
             Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
 
+            //createFile(bytes, arquivo);
         } catch(IOException e) {
             e.getMessage();
         }
@@ -57,7 +58,6 @@ public class FileUpload {
         String fileName = EscapeUtils.forJavaScript(event.getFile().getFileName());
         PrimeFaces.current().executeScript(jsVal + "(" + jsVal + "() + '\\n\\n" + fileName + " Enviado.')");
     }
-
     public UploadedFile getFile() {
         return file;
     }
