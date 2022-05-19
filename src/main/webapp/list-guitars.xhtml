@@ -43,7 +43,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
                                 <!-- span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span -->
                             </div>
                             <div class="product-grid-item-content">
-                                <h:graphicImage value="resourcers/img/#{guitarBean.img}" />
+                                <p:graphicImage library="img" name="#{guitarBean.img}" cache="false"></p:graphicImage>
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>
                                 <!-- p:rating readonly="true" value="#{product.rating}"/ -->
@@ -63,7 +63,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
 
                     <p:dataViewListItem>
                         <div class="product-list-item">
-                            <p:graphicImage value="resourcers/img/#{guitarBean.img}"></p:graphicImage>
+                            <p:graphicImage library="img" name="#{guitarBean.img}" />
                             <div class="product-list-detail">
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>

@@ -2,12 +2,12 @@ package br.com.barcelos_projects.repository;
 
 import java.util.List;
 
-import br.com.barcelos_projects.model.Guitar;
-
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import br.com.barcelos_projects.model.Guitar;
 
 @Stateful
 public class GuitarDAO {
@@ -64,6 +64,7 @@ public class GuitarDAO {
             throw e;
         }
     }
+    @SuppressWarnings("unchecked")
     public List<Guitar> listRandomGuitars (){
         try {
             Query query = this.entityManager.createNativeQuery("SELECT *FROM guitar ORDER BY RAND() LIMIT 12");

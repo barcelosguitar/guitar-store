@@ -1,39 +1,23 @@
 package br.com.barcelos_projects.service;
 
+import java.io.File;
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.primefaces.PrimeFaces;
 
 import br.com.barcelos_projects.enums.Brand;
 import br.com.barcelos_projects.enums.Model;
 import br.com.barcelos_projects.model.Guitar;
 import br.com.barcelos_projects.repository.GuitarDAO;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import com.rometools.rome.feed.rss.Image;
-
-import org.primefaces.PrimeFaces;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 @SessionScoped
 @Named ("guitarBean")
@@ -48,9 +32,10 @@ public class GuitarBean implements Serializable{
         
         @Inject
         private GuitarDAO guitarDAO;
-        private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resourcers/img/");
+        
+        //private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resourcers/img/");
+        private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
         private String absolutePath;
-        //private Path winPath = Paths.get("src\\main\\resources\\tmp");
 
         public void addGuitar() {
                 try {
@@ -61,7 +46,7 @@ public class GuitarBean implements Serializable{
                         newGuitar.setBrand(this.brand);
                         newGuitar.setPrice(this.price);
 
-                        File newFile = new File(linuxPath.toString());
+                        File newFile = new File(winPath.toString());
                         File[] list = newFile.listFiles();
 
                         for(File f : list){
@@ -72,12 +57,6 @@ public class GuitarBean implements Serializable{
                         }           
 
                         this.guitarDAO.add(newGuitar);
-
-                        /*for(File f : list){
-                                if(f.setLastModified(System.currentTimeMillis())){
-                                        f.delete();
-                                }
-                        }*/
                 
                 } catch (Exception e) {
                         e.printStackTrace();
@@ -90,21 +69,7 @@ public class GuitarBean implements Serializable{
         public List<Guitar> getRandomGuitarList(){
                 return this.guitarDAO.listRandomGuitars();
         }
-        /*public StreamedContent getFoto(){
-                File foto = new File("suafoto.jpg");
-                DefaultStreamedContent content=null;
-                try{
-                    BufferedInputStream in = new BufferedInputStream(new FileInputStream(foto));
-                    byte[] bytes = new byte[in.available()];
-                    in.read(bytes);
-                    in.close();
-                    content = new DefaultStreamedContent();
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-                return content;
-        }*/
-        
+
         public String getName() {
                 return name;
         }
@@ -136,12 +101,22 @@ public class GuitarBean implements Serializable{
                 this.price = price;
         }
         public String getImg(){
-                return img;
+                File img = new File(winPath.toString());
+                File[] fileList = img.listFiles();
+
+                for(Guitar g : guitarDAO.listGuitars()){
+                        for(File f : fileList){
+                                if(g.getImg().equals(f.getName())){
+                                        this.img = g.getImg();
+                                        return this.img;
+                                }
+                        }
+                }
+                return null;
         }
         public void setImg(String img) {
                 this.img = img;
         }
-
         public void clearMultiViewState() {
                 FacesContext context = FacesContext.getCurrentInstance();
                 String viewId = context.getViewRoot().getViewId();
