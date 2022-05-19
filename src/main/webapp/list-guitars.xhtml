@@ -32,7 +32,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
                             rowsPerPageTemplate="6,12,16"
                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             gridIcon="pi pi-th-large" listIcon="pi pi-bars">
-
+                            
                     <p:dataViewGridItem>
                         <div class="product-grid-item card border-1">
                             <div class="product-grid-item-top">
@@ -43,7 +43,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
                                 <!-- span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span -->
                             </div>
                             <div class="product-grid-item-content">
-                                <p:graphicImage value="#{guitar.img}" />
+                                <h:graphicImage value="resourcers/img/#{guitarBean.img}" />
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>
                                 <!-- p:rating readonly="true" value="#{product.rating}"/ -->
@@ -63,7 +63,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
 
                     <p:dataViewListItem>
                         <div class="product-list-item">
-                            <p:graphicImage value="#{guitar.img}" />
+                            <p:graphicImage value="resourcers/img/#{guitarBean.img}"></p:graphicImage>
                             <div class="product-list-detail">
                                 <div class="product-name">#{guitar.name}</div>
                                 <div class="product-description">#{guitar.description}</div>
