@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    lang="pt-br">
+
+    <h:head>
+        <title>Guitar Store | Guitars</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
+
+        <h:form id="form">
+            <div class="card crud-demo">
+                <p:growl id="messages" showDetail="true"/>
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Novo" icon="pi pi-plus" actionListener="#{crudView.openNew}"
+                                        update=":form:manage-product-content" oncomplete="PF('manageProductDialog').show()"
+                                        styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":form:manage-product-content"/>
+                        </p:commandButton>
+                        <p:commandButton id="delete-products-button" value="#{guitarBean.deleteButtonMessage}"
+                                        icon="pi pi-trash" actionListener="#{guitarBean.deleteSelectedProducts}"
+                                        styleClass="ui-button-danger" disabled="#{!guitarBean.hasSelectedProducts()}"
+                                        update="@this">
+                            <p:confirm header="Confirmação" message="Excluir itens selecionados?"
+                                    icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                    <p:toolbarGroup align="right">
+                        <p:fileUpload mode="simple" skinSimple="true" label="Import" chooseIcon="pi pi-download"/>
+                        <p:commandButton value="Exportar" icon="pi pi-upload" styleClass="ui-button-help" ajax="false">
+                            <p:dataExporter type="pdf" target="dt-products" fileName="products"/>
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-guitars" widgetVar="dtGuitars" var="product" value="#{guitarBean.guitars}"
+                            reflow="true" styleClass="products-table"
+                            selection="#{guitarBean.selectedGuitars}" rowKey="#{guitar.id}" paginator="true"
+                            rows="10" rowSelectMode="add" paginatorPosition="bottom">
+                    <f:facet name="header">
+                        <div class="products-table-header">
+                            <span style="font-weight: bold">PRODUTOS</span>
+
+                            <span class="filter-container ui-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <p:inputText id="globalFilter" onkeyup="PF('dtGuitars').filter()" placeholder="Pesquisar"/>
+                            </span>
+
+                        </div>
+                    </f:facet>
+
+                    <p:ajax event="rowSelect" update=":form:delete-products-button"/>
+                    <p:ajax event="rowUnselect" update=":form:delete-products-button"/>
+                    <p:ajax event="rowSelectCheckbox" update=":form:delete-products-button"/>
+                    <p:ajax event="rowUnselectCheckbox" update=":form:delete-products-button"/>
+                    <p:ajax event="toggleSelect" update=":form:delete-products-button"/>
+
+                    <p:column selectionMode="multiple" exportable="false"></p:column>
+
+                    <p:column headerText="ID" sortBy="#{guitarBean.id}" filterBy="#{guitarBean.id}">
+                        <h:outputText value="#{guitarBean.id}"/>
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{guitarBean.name}" filterBy="#{guitarBean.name}">
+                        <h:outputText value="#{guitarBean.name}"/>
+                    </p:column>
+                    <p:column headerText="Imagem" exportable="false">
+                        <p:graphicImage name="#{guitarBean.img}" library="img"
+                                        styleClass="product-image"/>
+                    </p:column>
+                    <p:column headerText="Preço" sortBy="#{guitarBean.price}">
+                        <h:outputText value="#{guitarBean.price}" style="font-weight: 700">
+                            <f:convertNumber currencySymbol="R$" type="currency"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Modelo" sortBy="#{guitarBean.model}" filterBy="#{guitarBean.model}">
+                        <h:outputText value="#{guitarBean.model}"/>
+                    </p:column>
+                    <p:column headerText="Marca" sortBy="#{guitarBean.brand}" filterBy="#{guitarBean.brand}">
+                        <h:outputText value="#{guitarBean.brand}"/>
+                    </p:column>
+                    <!--p:column headerText="Status" sortBy="#{product.inventoryStatus}"
+                            filterBy="#{product.inventoryStatus}">
+                        <h:outputText styleClass="product-badge status-#{product.inventoryStatus.name().toLowerCase()}"
+                                    value="#{product.inventoryStatus.text}"/>
+                    </p:column-->
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update=":form:manage-product-content"
+                                        oncomplete="PF('manageProductDialog').show()"
+                                        styleClass="edit-button rounded-button ui-button-success" process="@this">
+                            <f:setPropertyActionListener value="#{guitar}" target="#{guitarBean.selectedGuitar}"/>
+                            <p:resetInput target=":form:manage-product-content"/>
+                        </p:commandButton>
+                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this"
+                                        oncomplete="PF('deleteProductDialog').show()">
+                            <f:setPropertyActionListener value="#{guitar}" target="#{guitarBean.selectedGuitar}"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:dialog header="Detalhes" showEffect="fade" modal="true"
+                        widgetVar="manageProductDialog" responsive="true">
+                    <p:outputPanel id="manage-product-content" class="ui-fluid">
+                        <p:outputPanel rendered="#{not empty crudView.selectedProduct}">
+                            <p:graphicImage name="#{guitarBean.img}" library="img
+                                            styleClass="product-image"
+                                            rendered="#{not empty guitarBean.img}"/>
+                            <div class="p-field">
+                                <p:outputLabel for="name">Name</p:outputLabel>
+                                <p:inputText id="name" value="#{guitarBean.name}" required="true"/>
+                            </div>
+                            <div class="p-field">
+                                <p:outputLabel for="description">Descrição</p:outputLabel>
+                                <p:inputTextarea id="description" value="#{guitarBean.description}"/>
+                            </div>
+                            <div class="p-field">
+                                <p:outputLabel for="category">Modelo</p:outputLabel>
+                                <p:selectOneRadio id="model" value="#{guitarBean.model}"
+                                                layout="responsive" columns="2">
+                                    <f:selectItem itemLabel="Stratocaster" itemValue="STRATOCASTER"/>
+                                    <f:selectItem itemLabel="Telecaster" itemValue="TELECASTER"/>
+                                    <f:selectItem itemLabel="Les Paul" itemValue="LES_PAUL"/>
+                                    <f:selectItem itemLabel="SG" itemValue="SG"/>
+                                    <f:selectItem itemLabel="Semi-acústica" itemValue="SEMI_ACOUSTIC"/>
+                                </p:selectOneRadio>
+                            </div>
+                            <div class="p-field">
+                                <p:outputLabel for="category">Marca</p:outputLabel>
+                                <p:selectOneRadio id="model" value="#{guitarBean.brand}"
+                                                layout="responsive" columns="2">
+                                    <f:selectItem itemLabel="Fender" itemValue="FENDER"/>
+                                    <f:selectItem itemLabel="Squier" itemValue="SQUIER"/>
+                                    <f:selectItem itemLabel="Gibson" itemValue="GIBSON"/>
+                                    <f:selectItem itemLabel="Epiphone" itemValue="EPIPHONE"/>
+                                    <f:selectItem itemLabel="Ibanez" itemValue="IBANEZ"/>
+                                    <f:selectItem itemLabel="Gretsch" itemValue="GRETSCH"/>
+                                </p:selectOneRadio>
+                            </div>
+                            <div class="p-formgrid p-grid">
+                                <div class="p-field p-col">
+                                    <p:outputLabel for="price">Preço</p:outputLabel>
+                                    <p:inputNumber id="price" value="#{guitarBean.price}"
+                                                symbol=" R$" symbolPosition="s"
+                                                decimalSeparator="." thousandSeparator=","/>
+                                </div>
+                                <div class="p-field p-col">
+                                    <p:outputLabel for="quantity">Quantidade</p:outputLabel>
+                                    <p:spinner id="quantity" min="0" value="#{guitarBean.quantity}"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Salvar" icon="pi pi-check" actionListener="#{guitarBean.addGuitar}"
+                                        update="manage-product-content" process="manage-product-content @this"/>
+                        <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('manageProductDialog').hide()"
+                                        class="ui-button-secondary"/>
+                    </f:facet>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="deleteProductDialog" showEffect="fade" width="300"
+                                message="Apagar produto?" header="Confirmar" severity="warn">
+                    <p:commandButton value="Sim" icon="pi pi-check" actionListener="#{guitarBean.remove}"
+                                    process="@this" oncomplete="PF('deleteProductDialog').hide()"/>
+                    <p:commandButton value="Não" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                    onclick="PF('deleteProductDialog').hide()"/>
+                </p:confirmDialog>
+
+                <p:confirmDialog global="true" showEffect="fade" width="300">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"
+                                    icon="pi pi-times"/>
+                </p:confirmDialog>
+            </div>
+        </h:form>
+    </h:body>
+</html>

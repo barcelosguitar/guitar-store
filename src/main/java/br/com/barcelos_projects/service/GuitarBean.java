@@ -29,7 +29,9 @@ public class GuitarBean implements Serializable{
         private Brand brand;
         private Double price;
         private String img;
-        
+        private List<Guitar> selectedGuitars;
+        private Guitar selectedGuitar;
+
         @Inject
         private GuitarDAO guitarDAO;
         
@@ -37,6 +39,9 @@ public class GuitarBean implements Serializable{
         private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
         private String absolutePath;
 
+        public void openNew(){
+                this.selectedGuitar = new Guitar();
+        }
         public void addGuitar() {
                 try {
                         Guitar newGuitar = new Guitar();
@@ -57,12 +62,45 @@ public class GuitarBean implements Serializable{
                         }           
 
                         this.guitarDAO.add(newGuitar);
+
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Product Added"));
                 
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
+                PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
+                PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
+        }
+        public void remove(Guitar guitar){
+                try {
+                        this.guitarDAO.delete(guitar);
+                        this.selectedGuitar = null;
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Removido"));
+                        PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
+                       
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+        }
+        public String getDeleteButtonMessage() {
+                if (hasSelectedProducts()) {
+                    int size = this.selectedGuitars.size();
+                    return size > 1 ? size + " products selected" : "1 product selected";
+                }
+                return "Remover";
         }
         
+        public boolean hasSelectedProducts() {
+                return this.selectedGuitars != null && !this.selectedGuitars.isEmpty();
+        }
+        
+        public void deleteSelectedGuitars() {
+                this.guitarDAO.deleteAll(selectedGuitars);
+                this.selectedGuitars = null;
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Productos Removidos"));
+                PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
+                PrimeFaces.current().executeScript("PF('dtGuitars').clearFilters()");
+        }
         public List<Guitar> getGuitars(){
                 return this.guitarDAO.listGuitars();
         }
@@ -70,6 +108,20 @@ public class GuitarBean implements Serializable{
                 return this.guitarDAO.listRandomGuitars();
         }
 
+        //Getters and Setters
+        
+        public List<Guitar> getSelectedGuitars(){
+                return selectedGuitars;
+        }
+        public void setSelectedGuitars(List<Guitar> selectedGuitars){
+                this.selectedGuitars = selectedGuitars;
+        }
+        public Guitar getSelectedGuitar() {
+                return selectedGuitar;
+            }
+        public void setSelectedProduct(Guitar selectedGuitar) {
+                this.selectedGuitar = selectedGuitar;
+        }
         public String getName() {
                 return name;
         }
@@ -117,7 +169,7 @@ public class GuitarBean implements Serializable{
         public void setImg(String img) {
                 this.img = img;
         }
-        public void clearMultiViewState() {
+        /*public void clearMultiViewState() {
                 FacesContext context = FacesContext.getCurrentInstance();
                 String viewId = context.getViewRoot().getViewId();
                 PrimeFaces.current().multiViewState().clearAll(viewId, true, this::showMessage);
@@ -127,5 +179,5 @@ public class GuitarBean implements Serializable{
                 FacesContext.getCurrentInstance()
                         .addMessage(null,
                                 new FacesMessage(FacesMessage.SEVERITY_INFO, clientId + " multiview state has been cleared out", null));
-        }
+        }*/
 }

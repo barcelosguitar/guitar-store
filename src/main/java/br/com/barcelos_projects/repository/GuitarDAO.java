@@ -44,6 +44,16 @@ public class GuitarDAO {
             throw e;
         }
     }
+    public void deleteAll(List<Guitar> selectedGuitars){
+        try {
+            for (Guitar g : selectedGuitars){
+                Query query = this.entityManager.createNativeQuery("SELECT *FROM guitar WHERE id="+g.getId());
+                entityManager.remove(query.getFirstResult());
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
     public void update(Guitar object) {
         try {
             entityManager.merge(object);
