@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -23,20 +24,23 @@ import br.com.barcelos_projects.repository.GuitarDAO;
 @Named ("guitarBean")
 public class GuitarBean implements Serializable{
 
+        private String code;
         private String name;
         private String description;
         private Model model;
         private Brand brand;
         private Double price;
         private String img;
+        private Integer quantity;
+        private List<Guitar> guitars;
         private List<Guitar> selectedGuitars;
         private Guitar selectedGuitar;
 
         @Inject
         private GuitarDAO guitarDAO;
         
-        //private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resourcers/img/");
-        private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
+        private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resources/img/");
+        //private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
         private String absolutePath;
 
         public void openNew(){
@@ -45,13 +49,14 @@ public class GuitarBean implements Serializable{
         public void addGuitar() {
                 try {
                         Guitar newGuitar = new Guitar();
+                        newGuitar.setCode(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 9));
                         newGuitar.setName(this.name);
                         newGuitar.setDescription(this.description);
                         newGuitar.setModel(this.model);
                         newGuitar.setBrand(this.brand);
                         newGuitar.setPrice(this.price);
 
-                        File newFile = new File(winPath.toString());
+                        File newFile = new File(linuxPath.toString());
                         File[] list = newFile.listFiles();
 
                         for(File f : list){
@@ -63,7 +68,7 @@ public class GuitarBean implements Serializable{
 
                         this.guitarDAO.add(newGuitar);
 
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Product Added"));
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto cadastrado"));
                 
                 } catch (Exception e) {
                         e.printStackTrace();
@@ -71,9 +76,23 @@ public class GuitarBean implements Serializable{
                 PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
                 PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
         }
-        public void remove(Guitar guitar){
+        public void save(){
+                if (this.selectedGuitar.getId() == 0) {
+                        this.selectedGuitar.setCode(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 9));
+                        this.guitarDAO.add(this.selectedGuitar);
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Adicionado"));
+                    }
+                    else {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Atualizado"));
+                    }
+            
+                    PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
+                    PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
+                
+        }
+        public void remove(){
                 try {
-                        this.guitarDAO.delete(guitar);
+                        this.guitarDAO.delete(this.selectedGuitar);
                         this.selectedGuitar = null;
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Removido"));
                         PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
@@ -109,7 +128,7 @@ public class GuitarBean implements Serializable{
         }
 
         //Getters and Setters
-        
+
         public List<Guitar> getSelectedGuitars(){
                 return selectedGuitars;
         }
@@ -121,6 +140,12 @@ public class GuitarBean implements Serializable{
             }
         public void setSelectedProduct(Guitar selectedGuitar) {
                 this.selectedGuitar = selectedGuitar;
+        }
+        public String getCode() {
+                return code;
+        }
+        public void setCode(String code) {
+                this.code = code;
         }
         public String getName() {
                 return name;
@@ -153,7 +178,7 @@ public class GuitarBean implements Serializable{
                 this.price = price;
         }
         public String getImg(){
-                File img = new File(winPath.toString());
+                File img = new File(linuxPath.toString());
                 File[] fileList = img.listFiles();
 
                 for(Guitar g : guitarDAO.listGuitars()){
@@ -169,15 +194,10 @@ public class GuitarBean implements Serializable{
         public void setImg(String img) {
                 this.img = img;
         }
-        /*public void clearMultiViewState() {
-                FacesContext context = FacesContext.getCurrentInstance();
-                String viewId = context.getViewRoot().getViewId();
-                PrimeFaces.current().multiViewState().clearAll(viewId, true, this::showMessage);
-            }
-        
-            private void showMessage(String clientId) {
-                FacesContext.getCurrentInstance()
-                        .addMessage(null,
-                                new FacesMessage(FacesMessage.SEVERITY_INFO, clientId + " multiview state has been cleared out", null));
-        }*/
+        public Integer getQuantity() {
+                return quantity;
+        }
+        public void setQuantity(Integer quantity) {
+                this.quantity = quantity;
+        }
 }
