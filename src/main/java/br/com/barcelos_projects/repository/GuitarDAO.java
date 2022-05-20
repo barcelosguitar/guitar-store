@@ -1,5 +1,6 @@
 package br.com.barcelos_projects.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -47,8 +48,10 @@ public class GuitarDAO {
     public void deleteAll(List<Guitar> selectedGuitars){
         try {
             for (Guitar g : selectedGuitars){
-                Query query = this.entityManager.createNativeQuery("SELECT *FROM guitar WHERE id="+g.getId());
-                entityManager.remove(query.getFirstResult());
+                if(selectedGuitars.contains(g)){
+                    Query query = this.entityManager.createNativeQuery("DELETE FROM guitar WHERE id="+g.getId());
+                }
+                //entityManager.createQuery(query);
             }
         } catch (Exception e) {
             throw e;
@@ -69,6 +72,8 @@ public class GuitarDAO {
             List<Guitar> guitars = (List<Guitar>) query.getResultList();
             
             return guitars;
+        } catch(NullPointerException e) {
+            return null;
         } catch (Exception e) {
             System.out.println("GuitarDAO.listAll: " + e.getMessage());
             throw e;
@@ -81,9 +86,19 @@ public class GuitarDAO {
             List<Guitar> guitars = (List<Guitar>) query.getResultList();
 
             return guitars;
+        } catch(NullPointerException e) {
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
+    }
+    public List<Guitar> getClonedProducts() {
+        List<Guitar> results = new ArrayList<>();
+        List<Guitar> originals = listGuitars();
+        for (Guitar original : originals) {
+            results.add(original.clone());
+        }
+        return results;
     }
 }

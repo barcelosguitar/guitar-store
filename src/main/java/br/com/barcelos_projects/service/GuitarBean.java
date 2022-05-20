@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -20,8 +21,8 @@ import br.com.barcelos_projects.enums.Model;
 import br.com.barcelos_projects.model.Guitar;
 import br.com.barcelos_projects.repository.GuitarDAO;
 
-@SessionScoped
 @Named ("guitarBean")
+@SessionScoped
 public class GuitarBean implements Serializable{
 
         private String code;
@@ -39,63 +40,93 @@ public class GuitarBean implements Serializable{
         @Inject
         private GuitarDAO guitarDAO;
         
-        private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resources/img/");
-        //private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
-        private String absolutePath;
+        //private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resources/img/");
+        private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
+        private String fileName;
 
+        @PostConstruct
+        public void init (){
+                guitars = this.guitarDAO.listGuitars();
+        }
         public void openNew(){
                 this.selectedGuitar = new Guitar();
         }
         public void addGuitar() {
                 try {
-                        Guitar newGuitar = new Guitar();
-                        newGuitar.setCode(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 9));
-                        newGuitar.setName(this.name);
-                        newGuitar.setDescription(this.description);
-                        newGuitar.setModel(this.model);
-                        newGuitar.setBrand(this.brand);
-                        newGuitar.setPrice(this.price);
+                        if (this.selectedGuitar.getCode() == null) {
+                                Guitar newGuitar = new Guitar();
+                                newGuitar.setCode(UUID.randomUUID().toString()
+                                        .toUpperCase().replaceAll("-", "")
+                                        .substring(0, 9));
+                                newGuitar.setName(selectedGuitar.getName());
+                                newGuitar.setDescription(selectedGuitar.getDescription());
+                                newGuitar.setModel(selectedGuitar.getModel());
+                                newGuitar.setBrand(selectedGuitar.getBrand());
+                                newGuitar.setPrice(selectedGuitar.getPrice());
+                                newGuitar.setQuantity(selectedGuitar.getQuantity());
 
-                        File newFile = new File(linuxPath.toString());
-                        File[] list = newFile.listFiles();
+                                File newFile = new File(winPath.toString());
+                                File[] list = newFile.listFiles();
 
-                        for(File f : list){
-                                if(f.setLastModified(System.currentTimeMillis())){
-                                        absolutePath = f.getName();
-                                        newGuitar.setImg(absolutePath);
-                                }
-                        }           
+                                for(File f : list){
+                                        if(f.setLastModified(System.currentTimeMillis())){
+                                                fileName = f.getName();
+                                                newGuitar.setImg(fileName);
+                                        }
+                                }           
+                                this.guitarDAO.add(newGuitar);
 
-                        this.guitarDAO.add(newGuitar);
+                                FacesContext.getCurrentInstance().addMessage(null, 
+                                        new FacesMessage("Secesso!", "Produto cadastrado!"));
+                        } else {
+                                this.selectedGuitar.setImg(selectedGuitar.getImg());
+                                this.selectedGuitar.setCode(selectedGuitar.getCode());
+                                this.selectedGuitar.setName(selectedGuitar.getName());
+                                this.selectedGuitar.setDescription(selectedGuitar.getDescription());
+                                this.selectedGuitar.setModel(selectedGuitar.getModel());
+                                this.selectedGuitar.setBrand(selectedGuitar.getBrand());
+                                this.selectedGuitar.setPrice(selectedGuitar.getPrice());
+                                this.selectedGuitar.setQuantity(selectedGuitar.getQuantity());
 
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto cadastrado"));
+                                this.guitarDAO.update(this.selectedGuitar);
+                                FacesContext.getCurrentInstance().addMessage(null, 
+                                        new FacesMessage("Secesso!", "Produto cadastrado!"));
+
+                                PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
+                        }
                 
+                } catch (NullPointerException e) {
+                        FacesContext.getCurrentInstance().addMessage(null, 
+                                        new FacesMessage("Atenção!", e.getMessage()));
+                        PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
                 } catch (Exception e) {
+                        FacesContext.getCurrentInstance().addMessage(null, 
+                                        new FacesMessage("Atenção!", e.getMessage()));
                         e.printStackTrace();
                 }
                 PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
-                PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
+                PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
         }
         public void save(){
-                if (this.selectedGuitar.getId() == 0) {
+                if (this.selectedGuitar.getId().equals(null)) {
                         this.selectedGuitar.setCode(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 9));
                         this.guitarDAO.add(this.selectedGuitar);
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Adicionado"));
-                    }
-                    else {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Atualizado"));
-                    }
-            
-                    PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
-                    PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
+                }
+                else {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Atualizado"));
+                }
+        
+                PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
+                PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
                 
         }
         public void remove(){
                 try {
                         this.guitarDAO.delete(this.selectedGuitar);
                         this.selectedGuitar = null;
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Removido"));
-                        PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto removido!"));
+                        PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
                        
                 } catch (Exception e) {
                         e.printStackTrace();
@@ -104,9 +135,9 @@ public class GuitarBean implements Serializable{
         public String getDeleteButtonMessage() {
                 if (hasSelectedProducts()) {
                     int size = this.selectedGuitars.size();
-                    return size > 1 ? size + " products selected" : "1 product selected";
+                    return size > 1 ? size + " produtos selecionados" : "1 produto selecionado";
                 }
-                return "Remover";
+                return "Deletar";
         }
         
         public boolean hasSelectedProducts() {
@@ -114,21 +145,31 @@ public class GuitarBean implements Serializable{
         }
         
         public void deleteSelectedGuitars() {
-                this.guitarDAO.deleteAll(selectedGuitars);
+                this.guitarDAO.deleteAll(this.selectedGuitars);
                 this.selectedGuitars = null;
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Productos Removidos"));
-                PrimeFaces.current().ajax().update("form:messages", "form:dt-guitars");
-                PrimeFaces.current().executeScript("PF('dtGuitars').clearFilters()");
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Productos removidos!"));
+                PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
+                PrimeFaces.current().executeScript("PF('dtProducts').clearFilters()");
         }
-        public List<Guitar> getGuitars(){
+        public List<Guitar> listAllGuitars(){
                 return this.guitarDAO.listGuitars();
         }
         public List<Guitar> getRandomGuitarList(){
                 return this.guitarDAO.listRandomGuitars();
         }
-
+        public static String upperCaseFirst(String value) {
+                char[] arr = value.toCharArray();
+                arr[0] = Character.toUpperCase(arr[0]);
+                return new String(arr);
+        }
         //Getters and Setters
-
+        public List<Guitar> getGuitars(){
+                guitars = this.guitarDAO.listGuitars();
+                return guitars;
+        }
+        public void setGuitars(List<Guitar> guitars){
+                this.guitars = guitars;
+        }
         public List<Guitar> getSelectedGuitars(){
                 return selectedGuitars;
         }
@@ -138,7 +179,7 @@ public class GuitarBean implements Serializable{
         public Guitar getSelectedGuitar() {
                 return selectedGuitar;
             }
-        public void setSelectedProduct(Guitar selectedGuitar) {
+        public void setSelectedGuitar(Guitar selectedGuitar) {
                 this.selectedGuitar = selectedGuitar;
         }
         public String getCode() {
@@ -178,7 +219,7 @@ public class GuitarBean implements Serializable{
                 this.price = price;
         }
         public String getImg(){
-                File img = new File(linuxPath.toString());
+                File img = new File(winPath.toString());
                 File[] fileList = img.listFiles();
 
                 for(Guitar g : guitarDAO.listGuitars()){

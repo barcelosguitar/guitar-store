@@ -38,17 +38,23 @@ public class Guitar implements Serializable{
 	private String img;
 	@Column
 	private Integer quantity;
-	
-	public Guitar(String name, String description, Model model, Brand brand, double price, String img) {
+
+	public Guitar(String code, String name, String description, Model model, Brand brand, double price, String img, Integer quantity) {
+		this.code = code;
 		this.name = name;
 		this.description = description;
 		this.model = model;
 		this.brand = brand;
 		this.price = price;
 		this.img = img;
+		this.quantity = quantity;
 	}
 	public Guitar() {}
 	
+	@Override
+    public Guitar clone() {
+        return new Guitar(getCode(), getName(), getDescription(), getModel(), getBrand(), getPrice(), getImg(), getQuantity());
+    }
 	public Long getId(){
 		return id;
 	}
