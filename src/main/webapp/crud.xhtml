@@ -23,7 +23,7 @@
 
                 <p:toolbar>
                     <p:toolbarGroup>
-                        <p:commandButton value="Novo" icon="pi pi-plus" actionListener="#{crudView.openNew}"
+                        <p:commandButton value="Novo" icon="pi pi-plus" actionListener="#{guitarBean.openNew}"
                                         update=":form:manage-product-content" oncomplete="PF('manageProductDialog').show()"
                                         styleClass="ui-button-success" style="margin-right: .5rem">
                             <p:resetInput target=":form:manage-product-content"/>
@@ -37,14 +37,14 @@
                         </p:commandButton>
                     </p:toolbarGroup>
                     <p:toolbarGroup align="right">
-                        <p:fileUpload mode="simple" skinSimple="true" label="Import" chooseIcon="pi pi-download"/>
-                        <p:commandButton value="Exportar" icon="pi pi-upload" styleClass="ui-button-help" ajax="false">
-                            <p:dataExporter type="pdf" target="dt-products" fileName="products"/>
-                        </p:commandButton>
+                        <p:fileUpload label="Upload" chooseIcon="pi pi-upload" listener="#{fileUpload.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                            update="messages" sizeLimit="6000000" fileLimit="3" allowTypes="/(\.|\/)(jpe?g|png)$/"
+                            validateContentType="true" accept=".jpg,.jpeg,.png"
+                            onupload="return confirm('Tem certeza?')"/>
                     </p:toolbarGroup>
                 </p:toolbar>
 
-                <p:dataTable id="dt-guitars" widgetVar="dtGuitars" var="product" value="#{guitarBean.guitars}"
+                <p:dataTable id="dt-guitars" widgetVar="dtGuitars" var="guitar" value="#{guitarBean.guitars}"
                             reflow="true" styleClass="products-table"
                             selection="#{guitarBean.selectedGuitars}" rowKey="#{guitar.id}" paginator="true"
                             rows="10" rowSelectMode="add" paginatorPosition="bottom">
@@ -68,19 +68,18 @@
 
                     <p:column selectionMode="multiple" exportable="false"></p:column>
 
-                    <p:column headerText="ID" sortBy="#{guitarBean.id}" filterBy="#{guitarBean.id}">
-                        <h:outputText value="#{guitarBean.id}"/>
+                    <p:column headerText="Code" sortBy="#{guitarBean.code}" filterBy="#{guitarBean.code}">
+                        <h:outputText value="#{guitarBean.code}"/>
                     </p:column>
                     <p:column headerText="Nome" sortBy="#{guitarBean.name}" filterBy="#{guitarBean.name}">
                         <h:outputText value="#{guitarBean.name}"/>
                     </p:column>
                     <p:column headerText="Imagem" exportable="false">
-                        <p:graphicImage name="#{guitarBean.img}" library="img"
-                                        styleClass="product-image"/>
+                        <p:graphicImage name="#{guitarBean.img}" library="img" styleClass="product-image" />
                     </p:column>
                     <p:column headerText="Preço" sortBy="#{guitarBean.price}">
                         <h:outputText value="#{guitarBean.price}" style="font-weight: 700">
-                            <f:convertNumber currencySymbol="R$" type="currency"/>
+                            <f:convertNumber currencySymbol=" R$" type="currency"/>
                         </h:outputText>
                     </p:column>
                     <p:column headerText="Modelo" sortBy="#{guitarBean.model}" filterBy="#{guitarBean.model}">
@@ -88,6 +87,9 @@
                     </p:column>
                     <p:column headerText="Marca" sortBy="#{guitarBean.brand}" filterBy="#{guitarBean.brand}">
                         <h:outputText value="#{guitarBean.brand}"/>
+                    </p:column>
+                    <p:column headerText="Qtd." sortBy="#{guitarBean.quantity}" filterBy="#{guitarBean.quantity}">
+                        <h:outputText value="#{guitarBean.quantity}"/>
                     </p:column>
                     <!--p:column headerText="Status" sortBy="#{product.inventoryStatus}"
                             filterBy="#{product.inventoryStatus}">
@@ -106,57 +108,56 @@
                             <f:setPropertyActionListener value="#{guitar}" target="#{guitarBean.selectedGuitar}"/>
                         </p:commandButton>
                     </p:column>
-
                 </p:dataTable>
 
-                <p:dialog header="Detalhes" showEffect="fade" modal="true"
+                <p:dialog header="Detalhes do Produto" showEffect="fade" modal="true"
                         widgetVar="manageProductDialog" responsive="true">
                     <p:outputPanel id="manage-product-content" class="ui-fluid">
-                        <p:outputPanel rendered="#{not empty crudView.selectedProduct}">
-                            <p:graphicImage name="#{guitarBean.img}" library="img
+                        <p:outputPanel rendered="#{not empty guitarBean.selectedGuitar}">
+                            <p:graphicImage name="#{guitarBean.selectedGuitar.img}" library="img"
                                             styleClass="product-image"
-                                            rendered="#{not empty guitarBean.img}"/>
+                                            rendered="#{not empty guitarBean.selectedGuitar.img}"/>
                             <div class="p-field">
                                 <p:outputLabel for="name">Name</p:outputLabel>
-                                <p:inputText id="name" value="#{guitarBean.name}" required="true"/>
+                                <p:inputText id="name" value="#{guitarBean.selectedGuitar.name}" required="true"/>
                             </div>
                             <div class="p-field">
                                 <p:outputLabel for="description">Descrição</p:outputLabel>
-                                <p:inputTextarea id="description" value="#{guitarBean.description}"/>
+                                <p:inputTextarea id="description" value="#{guitarBean.selectedGuitar.description}"/>
                             </div>
                             <div class="p-field">
-                                <p:outputLabel for="category">Modelo</p:outputLabel>
-                                <p:selectOneRadio id="model" value="#{guitarBean.model}"
-                                                layout="responsive" columns="2">
+                                <p:outputLabel for="model">Modelo</p:outputLabel>
+                                <p:selectOneMenu id="model" value="#{guitarBean.selectedGuitar.model}"
+                                                layout="responsive">
                                     <f:selectItem itemLabel="Stratocaster" itemValue="STRATOCASTER"/>
                                     <f:selectItem itemLabel="Telecaster" itemValue="TELECASTER"/>
                                     <f:selectItem itemLabel="Les Paul" itemValue="LES_PAUL"/>
                                     <f:selectItem itemLabel="SG" itemValue="SG"/>
                                     <f:selectItem itemLabel="Semi-acústica" itemValue="SEMI_ACOUSTIC"/>
-                                </p:selectOneRadio>
+                                </p:selectOneMenu>
                             </div>
                             <div class="p-field">
-                                <p:outputLabel for="category">Marca</p:outputLabel>
-                                <p:selectOneRadio id="model" value="#{guitarBean.brand}"
-                                                layout="responsive" columns="2">
+                                <p:outputLabel for="brand">Marca</p:outputLabel>
+                                <p:selectOneMenu id="brand" value="#{guitarBean.selectedGuitar.brand}"
+                                                layout="responsive">
                                     <f:selectItem itemLabel="Fender" itemValue="FENDER"/>
                                     <f:selectItem itemLabel="Squier" itemValue="SQUIER"/>
                                     <f:selectItem itemLabel="Gibson" itemValue="GIBSON"/>
                                     <f:selectItem itemLabel="Epiphone" itemValue="EPIPHONE"/>
                                     <f:selectItem itemLabel="Ibanez" itemValue="IBANEZ"/>
                                     <f:selectItem itemLabel="Gretsch" itemValue="GRETSCH"/>
-                                </p:selectOneRadio>
+                                </p:selectOneMenu>
                             </div>
                             <div class="p-formgrid p-grid">
                                 <div class="p-field p-col">
                                     <p:outputLabel for="price">Preço</p:outputLabel>
-                                    <p:inputNumber id="price" value="#{guitarBean.price}"
+                                    <p:inputNumber id="price" value="#{guitarBean.selectedGuitar.price}"
                                                 symbol=" R$" symbolPosition="s"
-                                                decimalSeparator="." thousandSeparator=","/>
+                                                decimalSeparator="," thousandSeparator="."/>
                                 </div>
                                 <div class="p-field p-col">
                                     <p:outputLabel for="quantity">Quantidade</p:outputLabel>
-                                    <p:spinner id="quantity" min="0" value="#{guitarBean.quantity}"/>
+                                    <p:spinner id="quantity" min="0" value="#{guitarBean.selectedGuitar.quantity}"/>
                                 </div>
                             </div>
                         </p:outputPanel>
@@ -165,7 +166,7 @@
                     <f:facet name="footer">
                         <p:commandButton value="Salvar" icon="pi pi-check" actionListener="#{guitarBean.addGuitar}"
                                         update="manage-product-content" process="manage-product-content @this"/>
-                        <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('manageProductDialog').hide()"
+                        <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('manageProductDialog').hide()"
                                         class="ui-button-secondary"/>
                     </f:facet>
                 </p:dialog>

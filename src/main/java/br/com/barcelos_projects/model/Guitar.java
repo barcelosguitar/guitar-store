@@ -9,7 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import br.com.barcelos_projects.enums.Brand;
@@ -24,6 +23,8 @@ public class Guitar implements Serializable{
 	@Column
 	private String name;
 	@Column
+	private String code;
+	@Column
 	private String description;
 	@Column
 	@Enumerated (EnumType.STRING)
@@ -35,6 +36,8 @@ public class Guitar implements Serializable{
 	private Double price;
 	@Column
 	private String img;
+	@Column
+	private Integer quantity;
 	
 	public Guitar(String name, String description, Model model, Brand brand, double price, String img) {
 		this.name = name;
@@ -51,6 +54,12 @@ public class Guitar implements Serializable{
 	}
 	public void setId(Long id){
 		this.id = id;
+	}
+	public String getCode(){
+		return code;
+	}
+	public void setCode(String code){
+		this.code = code;
 	}
 	public String getName() {
 		return name;
@@ -87,5 +96,11 @@ public class Guitar implements Serializable{
 	}
 	public void setImg(String img) {
 		this.img = img;
+	}
+	public Integer getQuantity(){
+		return quantity;
+	}
+	public void setQuantity(Integer quantity){
+		this.quantity = quantity;
 	}
 }
