@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <h:head>
+        <title>Pedido Conclúido</title>
+        <link rel="stylesheet" href="resources/css/style.css"/>
+    </h:head>
+    <h:body>
+        <div>
+            <p:outputLabel for="code">Numero do pedido:</p:outputLabel>
+            <h:outputText id="code" />
+            <br/>
+            <p:outputLabel for="status">Situação do pedido:</p:outputLabel>
+            <h:outputText id="status" />
+            <br/>
+        </div>
+        <div>
+            <h2>Dados de Entrega</h2>
+            <h4>Endereço</h4>
+            <br/>
+            <div>
+                <h:outputText id="street"/>
+                <h:outputText id="number"/>
+                <h:outputText id="district"/>
+                <h:outputText id="city"/>
+                <h:outputText id="state"/>
+                <h:outputText id="cep"/>
+            </div>
+        </div>
+        <br/>
+        <div>
+            <h1>Pedido realizado com sucesso!</h1>
+            <p>Para acompanhar o andamento, anote o número do pedido, 
+                acesse o Painel de Controle > Meus Pedido, e verifique 
+                a situação atual.</p>
+            <h2>Dados do pagamento</h2>
+            <br/>
+            <h:outputText id="pay"/>
+        </div>
+
+    </h:body>
+</html>

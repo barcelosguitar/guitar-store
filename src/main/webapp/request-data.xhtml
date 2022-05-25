@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+	<title>Finalizar Compra</title>
+	<link rel="stylesheet" href="resources/css/style.css"/>
+
+    <style>
+        .flex {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        .buy-step-1--card {
+            width: 95%;
+        }
+        .buy-step-1--data {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .p-field > label {
+            width: 100%;
+            display: block;
+        }
+        .p-col-2 {
+            width: 100%;
+            padding: 0;
+        }
+        .ui-selectonemenu {
+            width: 100%;
+        }
+        .card-2 {
+            display: flex;
+            flex-direction: row;
+        }
+    </style>
+</h:head>
+<h:body styleClass="flex">
+
+    <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
+    
+    <div class="buy-step-1--card">
+        <h:form id="form-datas">
+            <div class="card">
+                <p:dataTable var="guitar" value="#{cartBean.selectedGuitars}">
+                    <p:column headerText="Produtos" styleClass="p-col-6">
+                        <h:outputText value="#{guitar.name}" />
+                    </p:column>
+            
+                    <p:column headerText="Qtd." styleClass="p-col-1">
+                        <h:outputText value="#{guitar.quantity}" />
+                    </p:column>
+
+                    <p:column headerText="Preço" styleClass="p-col-1">
+                        <h:outputText value="#{guitar.price}" styleClass="product-price">
+                            <f:convertNumber currencySymbol="R$" type="currency" />
+                        </h:outputText>
+                    </p:column>
+            
+                    <f:facet name="footer">
+                        <span class="p-text-bold">In total there are 1 products.</span>
+                    </f:facet>
+                </p:dataTable>
+            </div>
+        </h:form>
+        <div class="card card-2">
+            <div class="buy-step-1--data">
+                <div>
+                    <h4>Dados pessoais</h4>
+                </div>
+                <div>
+                    <div class="p-field p-col-2 buy-step-1--email">
+                        <p:outputLabel for="email">E-mail</p:outputLabel>
+                        <div>
+                            <p:inputText id="email" value="#{costumerBean.costumer.email}"style="width: 100%;" required="true"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-formgrid p-grid">
+                    <div class="p-field p-col">
+                        <p:outputLabel for="pwd1">Criar senha</p:outputLabel>
+                        <div>
+                            <p:password id="pwd1" match="pwd2" required="true"/>
+                        </div>
+                    </div>
+                    <div class="p-field p-col">
+                        <p:outputLabel for="pwd2">Confirmar senha</p:outputLabel>
+                        <div>
+                            <p:password id="pwd2" value="#{costumerBean.costumer.pwd}" required="true"/>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="p-field p-col-2 buy-step-1--email">
+                        <p:outputLabel for="name">Nome completo</p:outputLabel>
+                        <div>
+                            <p:inputText id="name" value="#{costumerBean.costumer.name}"
+                            style="width: 100%;" required="true"/>
+                        </div>
+                    </div>
+                    <div class="p-formgrid p-grid">
+                        <div class="p-field p-col">
+                            <p:outputLabel for="cpf">CPF</p:outputLabel>
+                            <div>
+                                <p:password id="cpf" value="#{costumerBean.costumer.cpf}" required="true"/>
+                            </div>
+                        </div>
+                        <div class="p-field p-col">
+                            <p:outputLabel for="rg">RG</p:outputLabel>
+                            <div>
+                                <p:password id="rg" value="#{costumerBean.costumer.rg}" required="true"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-formgrid p-grid">
+                        <div class="p-field p-col">
+                            <p:outputLabel for="sex" label="sex">Sexo</p:outputLabel>
+                            <p:selectOneMenu id="sex" value="#{costumerBean.costumer.sex}" required="true">
+                                <f:selectItem itemLabel="Masculino" itemValue="MASCULINO"/>
+                                <f:selectItem itemLabel="Feminino" itemValue="FEMININO"/>
+                                <f:selectItem itemLabel="Outro" itemValue="OUTROS"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="p-field p-col">
+                            <p:outputLabel for="birthday">Data de nascimento</p:outputLabel>
+                            <p:inputMask id="birthday" value="#{costumerBean.costumer.birthday}" mask="99/99/9999"/>
+                        </div>
+                    </div>
+                    <div class="p-formgrid p-grid">
+                        <div class="p-field p-col">
+                            <p:outputLabel for="cell">Celular</p:outputLabel>
+                            <p:inputMask id="cell" value="#{costumerBean.costumer.cell}" mask="(99) 9 9999-9999"/>
+                        </div>
+                        <div class="p-field p-col">
+                            <p:outputLabel for="phone">Telefone fixo</p:outputLabel>
+                            <p:inputMask id="phone" value="#{costumerBean.costumer.phone}" mask="(99) 9999-9999"/>
+                        </div>
+                    </div>
+                    <p:commandButton value="Salvar" action="#{costumerBean.addCostumer}" icon="pi pi-check" />
+                </div>
+            </div>
+            <div class="buy-step-1--data">
+                <div>
+                    <h4>Endereço</h4>
+                </div>
+                <div class="p-field p-col">
+                    <p:outputLabel for="cep">CEP</p:outputLabel>
+                    <div>
+                        <p:inputMask id="cep" value="#{costumerBean.costumer.cep}" mask="99999-999"/>
+                    </div>
+                </div>
+                <div>
+                    <div class="p-field p-col-3">
+                        <p:outputLabel for="address">Endereço</p:outputLabel>
+                        <div>
+                            <p:inputText id="address" value="#{costumerBean.address.street}" required="true"/>
+                        </div>
+                    </div>
+                    <div class="p-field p-col">
+                        <p:outputLabel for="num">Número</p:outputLabel>
+                        <div>
+                            <p:inputText id="num" value="#{costumerBean.address.houseNumber}" required="true"/>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="p-field p-col">
+                        <p:outputLabel for="comp">Complemento</p:outputLabel>
+                        <div>
+                            <p:inputText id="comp" value="#{costumerBean.address.complement}"/>
+                        </div>
+                    </div>
+                    <div class="p-field p-col">
+                        <p:outputLabel for="district">Bairro</p:outputLabel>
+                        <div>
+                            <p:inputText id="district" value="#{costumerBean.address.district}" required="true"/>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="p-field p-col">
+                        <p:outputLabel for="city">Cidade</p:outputLabel>
+                        <div>
+                            <p:inputText id="city" value="#{costumerBean.address.city}" required="true"/>
+                        </div>
+                    </div>
+                    <div class="p-field p-col">
+                        <p:outputLabel for="state">Estado</p:outputLabel>
+                        <div>
+                            <p:inputText id="state" value="#{costumerBean.address.state}" required="true"/>
+                        </div>
+                    </div>
+                    <p:commandButton value="Continuar" action="#{costumerBean.addAddress}"icon="pi pi-check" />
+                </div>
+            </div>
+            <div class="flex buy-step-1--data">
+                <div>
+                    <h4>Pagamento</h4>
+                </div>
+                <p:selectOneRadio id="console" unselectable="true" class="p-d-flex p-jc-start ">
+                    <f:selectItem itemLabel="Cartão de Crédito" itemValue=""/>
+                    <f:selectItem itemLabel="Boleto" itemValue=""/>
+                    <f:selectItem itemLabel="PIX" itemValue=""/>
+                </p:selectOneRadio>
+                <p:commandButton value="Finalizar compra" action="#{requestBean.addRequest}" icon="pi pi-check"/>
+            </div>
+        </div>
+    </div>
+</h:body>
+</html>
