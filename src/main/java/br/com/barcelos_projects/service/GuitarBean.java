@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -22,7 +23,7 @@ import br.com.barcelos_projects.model.Guitar;
 import br.com.barcelos_projects.repository.GuitarDAO;
 
 @Named ("guitarBean")
-@SessionScoped
+@ApplicationScoped
 public class GuitarBean implements Serializable{
 
         private String code;
@@ -40,8 +41,8 @@ public class GuitarBean implements Serializable{
         @Inject
         private GuitarDAO guitarDAO;
         
-        //private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resources/img/");
-        private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
+        private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resources/img");
+        //private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
         private String fileName;
 
         @PostConstruct
@@ -51,7 +52,7 @@ public class GuitarBean implements Serializable{
         public void openNew(){
                 this.selectedGuitar = new Guitar();
         }
-        public void addGuitar() {
+        public void save() {
                 try {
                         if (this.selectedGuitar.getCode() == null) {
                                 Guitar newGuitar = new Guitar();
@@ -60,12 +61,13 @@ public class GuitarBean implements Serializable{
                                         .substring(0, 9));
                                 newGuitar.setName(selectedGuitar.getName());
                                 newGuitar.setDescription(selectedGuitar.getDescription());
+                                
                                 newGuitar.setModel(selectedGuitar.getModel());
                                 newGuitar.setBrand(selectedGuitar.getBrand());
                                 newGuitar.setPrice(selectedGuitar.getPrice());
                                 newGuitar.setQuantity(selectedGuitar.getQuantity());
 
-                                File newFile = new File(winPath.toString());
+                                File newFile = new File(linuxPath.toString());
                                 File[] list = newFile.listFiles();
 
                                 for(File f : list){
@@ -107,25 +109,14 @@ public class GuitarBean implements Serializable{
                 PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
                 PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
         }
-        public void save(){
-                if (this.selectedGuitar.getId().equals(null)) {
-                        this.selectedGuitar.setCode(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 9));
-                        this.guitarDAO.add(this.selectedGuitar);
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Adicionado"));
-                }
-                else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto Atualizado"));
-                }
-        
-                PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
-                PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
-                
-        }
         public void remove(){
                 try {
+                        File deleteImgFile = new File(linuxPath+this.selectedGuitar.getImg());
+                        deleteImgFile.delete();
                         this.guitarDAO.delete(this.selectedGuitar);
                         this.selectedGuitar = null;
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Produto removido!"));
+                        
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Sucesso!","Produto removido"));
                         PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
                        
                 } catch (Exception e) {
@@ -145,8 +136,16 @@ public class GuitarBean implements Serializable{
         }
         
         public void deleteSelectedGuitars() {
-                this.guitarDAO.deleteAll(this.selectedGuitars);
-                this.selectedGuitars = null;
+                File file = new File(linuxPath.toString());
+                File[] fileList = file.listFiles();
+                for(Guitar guitar : this.selectedGuitars){
+                        if(file.getName().equals(guitar.getImg())){
+                                file.delete();
+                        }
+                        if(selectedGuitars.contains(guitar)){
+                                this.guitarDAO.delete(guitar);
+                        }
+                }
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Productos removidos!"));
                 PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
                 PrimeFaces.current().executeScript("PF('dtProducts').clearFilters()");
@@ -157,11 +156,7 @@ public class GuitarBean implements Serializable{
         public List<Guitar> getRandomGuitarList(){
                 return this.guitarDAO.listRandomGuitars();
         }
-        public static String upperCaseFirst(String value) {
-                char[] arr = value.toCharArray();
-                arr[0] = Character.toUpperCase(arr[0]);
-                return new String(arr);
-        }
+
         //Getters and Setters
         public List<Guitar> getGuitars(){
                 guitars = this.guitarDAO.listGuitars();
@@ -200,14 +195,14 @@ public class GuitarBean implements Serializable{
         public void setDescription(String description) {
                 this.description = description;
         }
-        public Model getModel() {
-                return model;
+        public String getModel() {
+                return model.getDescription();
         }
         public void setModel(Model model) {
                 this.model = model;
         }
-        public Brand getBrand() {
-                return brand;
+        public String getBrand() {
+                return brand.getDescription();
         }
         public void setBrand(Brand brand) {
                 this.brand = brand;
@@ -219,7 +214,7 @@ public class GuitarBean implements Serializable{
                 this.price = price;
         }
         public String getImg(){
-                File img = new File(winPath.toString());
+                File img = new File(linuxPath.toString());
                 File[] fileList = img.listFiles();
 
                 for(Guitar g : guitarDAO.listGuitars()){

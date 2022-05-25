@@ -55,6 +55,7 @@ public class Guitar implements Serializable{
     public Guitar clone() {
         return new Guitar(getCode(), getName(), getDescription(), getModel(), getBrand(), getPrice(), getImg(), getQuantity());
     }
+
 	public Long getId(){
 		return id;
 	}
@@ -108,5 +109,10 @@ public class Guitar implements Serializable{
 	}
 	public void setQuantity(Integer quantity){
 		this.quantity = quantity;
+	}
+	public static String upperCaseFirst(String value) {
+		char[] arr = value.toCharArray();
+		arr[0] = Character.toUpperCase(arr[0]);
+		return new String(arr);
 	}
 }

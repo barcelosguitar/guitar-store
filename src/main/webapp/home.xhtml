@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+	<title>Guitar Store | Home</title>
+	<link rel="stylesheet" href="resources/css/style.css"/>
+
+	<style>
+		
+		.product-grid-item {
+			display: flex;
+			flex-direction: column;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+
+			box-shadow: 0 0 3em var(--color-2);
+			border-radius: 20px;
+			width: 275px;
+			height: 377px;
+		}
+		.product-grid-item-content {
+			height: 250px;
+			justify-items: center;
+			align-items: center;
+		}
+		.product-grid-item-bottom {
+			border-top: var(--color-2) solid 1px;
+			padding: 20px;
+			height: 127px;
+			justify-items: center;
+			align-items: center;
+		}
+		.product-name {
+			/*max-height: 60px;*/
+			height: 60px;
+			overflow: hidden;
+			font-weight: 600;
+		}
+		.product-price-div {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.ui-button-flat {
+        	font-size: .5rem;
+    	}
+		.ad-card {
+			width: 275px;height: 377px;
+			border-radius: 15px;
+		}
+		.img {
+			max-height:250px;
+			width: auto;
+			height: auto;
+			align-items: center;
+		}
+		.ad-card-descri {
+			background-color: #232323;
+			width: 275px;height: 141px;
+		}
+		.ad-title {
+			font-size: 18px;
+			font-weight: 600;
+			justify-content: flex-start;
+			padding: 35px 0px 35px 50px;
+		}
+	</style>
+</h:head>
+<h:body>
+
+	<h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
+
+	<nav class="navbar p-d-flex p-jc-between p-ai-center">
+		<h1>Guitar Store</h1>
+		<span class="ui-input-icon-left search">
+			<i class="pi pi-search"></i>
+			<p:inputText placeholder="Pesquisa em todo site" />
+		</span>
+		<ul class="flex">
+			<li><p:link href="shop-cart.xhtml"><i class="pi pi-shopping-cart" style="font-size: 2rem"></i></p:link></li>
+			<!--li><a href="shop-cart.xhtml"><i class="pi pi-shopping-cart" style="font-size: 2rem"></i></a></li -->
+		</ul>
+	</nav>
+	<div class="card product">    
+		<h:form id="form-home">
+
+			<p:messages id="messages"/>
+
+			<p:dataView var="guitar" value="#{guitarBean.guitars}" rows="12" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+				selection="#{cartBean.selectedGuitars}"
+				gridIcon="pi pi-th-large" listIcon="pi pi-bars"
+				layout="grid" gridRowStyleClass="p-lg-6 p-xl-4">
+						
+				<p:dataViewGridItem>
+					<div class="product-grid-item card border-1">
+						<div class="product-grid-item-content">
+							<p:graphicImage styleClass="img" library="img" name="#{guitar.img}" cache="false"/>
+						</div>
+						<div class="product-grid-item-bottom">
+							<div class="product-name">#{guitar.name}</div>
+							<div class="product-price-div">
+								<h:outputText value="#{guitar.price}" styleClass="product-price">
+									<f:convertNumber currencySymbol="R$" type="currency" />
+								</h:outputText>
+								<p:commandLink action="#{cartBean.addToCart(guitar)}" ajax="false">
+									<i class="pi pi-shopping-cart"></i>
+								</p:commandLink>
+							</div>
+						</div>
+					</div>
+				</p:dataViewGridItem>
+			</p:dataView>
+		</h:form>
+	</div>
+</h:body>
+</html>

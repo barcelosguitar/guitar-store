@@ -79,10 +79,10 @@
                         </h:outputText>
                     </p:column>
                     <p:column headerText="Modelo" sortBy="#{guitar.model}">
-                        <h:outputText value="#{guitar.model}" />
+                        <h:outputText value="#{guitar.model.description}" />
                     </p:column>
                     <p:column headerText="Marca" sortBy="#{guitar.brand}">
-                        <h:outputText value="#{guitar.brand}" />
+                        <h:outputText value="#{guitar.brand.description}" />
                     </p:column>
                     <p:column headerText="Qtd." sortBy="#{guitar.quantity}">
                         <h:outputText value="#{guitar.quantity}" />
@@ -121,42 +121,47 @@
                                 <p:outputLabel for="description">Descrição</p:outputLabel>
                                 <p:inputTextarea id="description" value="#{guitarBean.selectedGuitar.description}"/>
                             </div>
-                            <div class="p-field">
-                                <p:outputLabel for="model">Modelo</p:outputLabel>
-                                <p:selectOneMenu id="model" value="#{guitarBean.selectedGuitar.model}"
-                                                layout="responsive">
-                                    <f:selectItem itemLabel="Stratocaster" itemValue="STRATOCASTER"/>
-                                    <f:selectItem itemLabel="Telecaster" itemValue="TELECASTER"/>
-                                    <f:selectItem itemLabel="Les Paul" itemValue="LES_PAUL"/>
-                                    <f:selectItem itemLabel="SG" itemValue="SG"/>
-                                    <f:selectItem itemLabel="Semi-acústica" itemValue="SEMI_ACOUSTIC"/>
-                                </p:selectOneMenu>
+                            <div>
+
                             </div>
-                            <div class="p-field">
-                                <p:outputLabel for="brand">Marca</p:outputLabel>
-                                <p:selectOneMenu id="brand" value="#{guitarBean.selectedGuitar.brand}"
-                                                layout="responsive">
-                                    <f:selectItem itemLabel="Fender" itemValue="FENDER"/>
-                                    <f:selectItem itemLabel="Squier" itemValue="SQUIER"/>
-                                    <f:selectItem itemLabel="Gibson" itemValue="GIBSON"/>
-                                    <f:selectItem itemLabel="Epiphone" itemValue="EPIPHONE"/>
-                                    <f:selectItem itemLabel="Ibanez" itemValue="IBANEZ"/>
-                                    <f:selectItem itemLabel="Gretsch" itemValue="GRETSCH"/>
-                                </p:selectOneMenu>
+                            <div class="p-formgrid p-grid">
+                                <div class="p-field p-col">
+                                    <p:outputLabel for="model">Modelo</p:outputLabel>
+                                    <p:selectOneMenu id="model" value="#{guitarBean.selectedGuitar.model}"
+                                                    layout="responsive" required="true">
+                                        <f:selectItem itemLabel="Stratocaster" itemValue="STRATOCASTER"/>
+                                        <f:selectItem itemLabel="Telecaster" itemValue="TELECASTER"/>
+                                        <f:selectItem itemLabel="Les Paul" itemValue="LES_PAUL"/>
+                                        <f:selectItem itemLabel="SG" itemValue="SG"/>
+                                        <f:selectItem itemLabel="Semi-acústica" itemValue="SEMI_ACOUSTIC"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="p-field p-col">
+                                    <p:outputLabel for="brand">Marca</p:outputLabel>
+                                    <p:selectOneMenu id="brand" value="#{guitarBean.selectedGuitar.brand}"
+                                                    layout="responsive" required="true">
+                                        <f:selectItem itemLabel="Fender" itemValue="FENDER"/>
+                                        <f:selectItem itemLabel="Squier" itemValue="SQUIER"/>
+                                        <f:selectItem itemLabel="Gibson" itemValue="GIBSON"/>
+                                        <f:selectItem itemLabel="Epiphone" itemValue="EPIPHONE"/>
+                                        <f:selectItem itemLabel="Ibanez" itemValue="IBANEZ"/>
+                                        <f:selectItem itemLabel="Gretsch" itemValue="GRETSCH"/>
+                                    </p:selectOneMenu>
+                                </div>
                             </div>
                             <div class="p-formgrid p-grid">
                                 <div class="p-field p-col">
                                     <p:outputLabel for="price">Preço</p:outputLabel>
                                     <p:inputNumber id="price" value="#{guitarBean.selectedGuitar.price}"
                                                 symbol=" R$" symbolPosition="s"
-                                                decimalSeparator="," thousandSeparator="."/>
+                                                decimalSeparator="," thousandSeparator="." required="true"/>
                                 </div>
                                 <div class="p-field p-col">
                                     <p:outputLabel for="quantity">Quantidade</p:outputLabel>
-                                    <p:spinner id="quantity" min="0" value="#{guitarBean.selectedGuitar.quantity}"/>
+                                    <p:spinner id="quantity" min="0" value="#{guitarBean.selectedGuitar.quantity}" required="true" />
                                 </div>
                             </div>
-                            <p:fileUpload label="Upload" chooseIcon="pi pi-upload" listener="#{fileUpload.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                            <p:fileUpload label="Enviar" chooseIcon="pi pi-upload" listener="#{fileUpload.handleFileUpload}" mode="advanced" dragDropSupport="false"
                                 update="messages" sizeLimit="6000000" fileLimit="3" allowTypes="/(\.|\/)(jpe?g|png)$/"
                                 validateContentType="true" accept=".jpg,.jpeg,.png"
                                 onupload="return confirm('Tem certeza?')"/>
@@ -164,7 +169,7 @@
                     </p:outputPanel>
 
                     <f:facet name="footer">
-                        <p:commandButton value="Salvar" icon="pi pi-check" actionListener="#{guitarBean.addGuitar}"
+                        <p:commandButton value="Salvar" icon="pi pi-check" actionListener="#{guitarBean.save}"
                                         update="manage-product-content" process="manage-product-content @this"/>
                         <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('manageProductDialog').hide()"
                                         class="ui-button-secondary"/>

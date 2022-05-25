@@ -23,8 +23,8 @@ public class FileUpload {
     
     private UploadedFile file;
     private String dropZoneText = "Drop zone p:inputTextarea demo.";
-    //private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resources/img/");
-    private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
+    private Path linuxPath = Paths.get("/home/barcelos/git/guitar-store/src/main/webapp/resources/img");
+    //private Path winPath = Paths.get("C:\\Users\\Usuário\\git\\guitar-store\\src\\main\\webapp\\resources\\img");
     
     public void upload(FileUploadEvent event) {
         
@@ -42,7 +42,7 @@ public class FileUpload {
         FacesContext.getCurrentInstance().addMessage(null, msg);
         
         try {
-            Path filePath = Files.createTempFile(winPath, "" + "", ".png");
+            Path filePath = Files.createTempFile(linuxPath, "" + "", ".png");
             
             InputStream input = file.getInputStream();
             Files.copy(input, filePath, StandardCopyOption.REPLACE_EXISTING);
