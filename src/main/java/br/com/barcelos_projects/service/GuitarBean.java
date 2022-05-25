@@ -139,7 +139,7 @@ public class GuitarBean implements Serializable{
                 File file = new File(linuxPath.toString());
                 File[] fileList = file.listFiles();
                 for(Guitar guitar : this.selectedGuitars){
-                        if(file.getName().equals(guitar.getImg())){
+                        if(file.getPath().equals(guitar.getImg())){
                                 file.delete();
                         }
                         if(selectedGuitars.contains(guitar)){

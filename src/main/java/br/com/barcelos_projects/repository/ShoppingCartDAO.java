@@ -11,7 +11,7 @@ public class ShoppingCartDAO {
 
     public void add(Guitar guitar){
         try {
-                ShoppingCartTemp.selectedGuitars.add(guitar);
+            ShoppingCartTemp.selectedGuitars.add(guitar);
         } catch (Exception e) {
             e.printStackTrace();
         }

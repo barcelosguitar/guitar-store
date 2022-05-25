@@ -115,5 +115,11 @@ public class Costumer implements Serializable{
     }
     public void setPhone(String phone) {
         this.phone = phone;
-    }   
+    }
+    public Address getAddress() {
+        return address;
+    }
+    public void setAddress(Address address) {
+        this.address = address;
+    } 
 }

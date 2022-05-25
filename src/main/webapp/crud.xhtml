@@ -87,11 +87,6 @@
                     <p:column headerText="Qtd." sortBy="#{guitar.quantity}">
                         <h:outputText value="#{guitar.quantity}" />
                     </p:column>
-                    <!--p:column headerText="Status" sortBy="#{product.inventoryStatus}"
-                            filterBy="#{product.inventoryStatus}">
-                        <h:outputText styleClass="product-badge status-#{product.inventoryStatus.name().toLowerCase()}"
-                                    value="#{product.inventoryStatus.text}"/>
-                    </p:column-->
                     <p:column exportable="false">
                         <p:commandButton icon="pi pi-pencil" update=":form:manage-product-content"
                                         oncomplete="PF('manageProductDialog').show()"

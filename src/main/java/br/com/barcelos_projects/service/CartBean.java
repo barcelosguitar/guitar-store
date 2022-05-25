@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
 import br.com.barcelos_projects.model.Guitar;
-import br.com.barcelos_projects.repository.GuitarDAO;
 import br.com.barcelos_projects.repository.ShoppingCartDAO;
 
 @Named ("cartBean")
@@ -20,31 +20,17 @@ public class CartBean implements Serializable{
     @Inject
     private ShoppingCartDAO cartDAO;
 
-    private GuitarDAO guitarDAO;
-    //private List<Guitar> guitars;
     private List<Guitar> selectedGuitars;
     private Guitar selectedGuitar;
-
-    private String name;
-    private Double price;
     private Integer quantity;
     private Double subtotal;
 
     public String addToCart(Guitar guitar){
         try {
-            //selectedGuitar = new Guitar();
-            //if(selectedGuitar.getCode()!=guitar.getCode()){
-                this.selectedGuitar = new Guitar();
-                this.selectedGuitar.setCode(guitar.getCode());
-                this.selectedGuitar.setImg(guitar.getImg());
-                this.selectedGuitar.setName(guitar.getName());
-                this.selectedGuitar.setPrice(guitar.getPrice());
-
-                this.setQuantity(1);
-                this.cartDAO.add(this.selectedGuitar);
-
-                
-            //}
+            this.selectedGuitar = new Guitar();
+            this.selectedGuitar = guitar.clone();
+            this.selectedGuitar.setQuantity(1);
+            this.cartDAO.add(this.selectedGuitar);
         } catch (Exception e) {
             e.getMessage();
         }
@@ -57,20 +43,28 @@ public class CartBean implements Serializable{
                 this.cartDAO.remove(guitar);
             }
         } catch (Exception e) {
-            //TODO: handle exception
+            e.printStackTrace();
         }
     }
     public Double getSubtotal(){
-        double result;
+        subtotal = 0.0d;
         for(Guitar g : this.cartDAO.listSelectedGuitars()){
-            subtotal += selectedGuitar.getPrice();
+            subtotal+=g.getPrice();
         }
         return subtotal;
+    }
+    public void updatedPrice(ValueChangeEvent event){
+
+        this.selectedGuitar.setQuantity((Integer) event.getNewValue());
+        this.quantity = (Integer) event.getNewValue();
+
+        this.selectedGuitar.setPrice(quantity*selectedGuitar.getPrice());
+
+        PrimeFaces.current().ajax().update("form:form-cart");
     }
     public void setSubtotal(Double subtotal){
         this.subtotal = subtotal;
     }
-
     public List<Guitar> getSelectedGuitars() {
         selectedGuitars = this.cartDAO.listSelectedGuitars();
         return selectedGuitars;
@@ -84,26 +78,13 @@ public class CartBean implements Serializable{
     public void setSelectedGuitar(Guitar selectedGuitar) {
         this.selectedGuitar = selectedGuitar;
     }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public Double getPrice() {
-        return price;
-    }
-    public void setPrice(Double price) {
-        this.price = price;
-    }
     public Integer getQuantity() {
-        this.selectedGuitar.setPrice(quantity*this.selectedGuitar.getPrice());
-        PrimeFaces.current().ajax().update("form:messages", "form:form-cart");
         return quantity;
     }
     public void setQuantity(Integer quantity) {
-        this.selectedGuitar.setPrice(quantity*selectedGuitar.getPrice());
         this.quantity = quantity;
-        PrimeFaces.current().ajax().update("form:messages", "form:form-cart");
+    }
+    public String requestData(){
+        return "/request-data.xhtml";
     }
 }

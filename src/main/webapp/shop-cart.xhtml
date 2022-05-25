@@ -129,7 +129,7 @@
 			<li><a href=""><i class="pi pi-shopping-cart" style="font-size: 2rem"></i></a></li>
 		</ul>
 	</nav>
-	<h:form class="form-cart">
+	<h:form id="form-cart">
 		<div class="card-1">
 			<div>
 				<h1 class="card-title">Carrinho de compras</h1>
@@ -150,7 +150,8 @@
 							</h:outputText>
 							<div class="p-field p-col">
 								<p:outputLabel for="quantity">Qtd: </p:outputLabel>
-								<p:selectOneMenu id="quantity" value="#{cartBean.quantity}">
+								<p:selectOneMenu id="quantity" value="#{product.quantity}" update="@form">
+									<p:ajax listener="#{cartBean.updatedPrice}"/>
 									<f:selectItem itemLabel="0" itemValue="0"/>
 									<f:selectItem itemLabel="1" itemValue="1"/>
 									<f:selectItem itemLabel="2" itemValue="2"/>
@@ -159,11 +160,6 @@
 									<f:selectItem itemLabel="5" itemValue="5"/>
 								</p:selectOneMenu>
 							</div>
-							<!--x'div class="p-field p-col">
-								<p:outputLabel for="quantity">Qtd: </p:outputLabel>
-								<p:spinner id="quantity" value="#{cartBean.quantity}" 
-									min="1" max="10" required="true"/>
-							</div-->
 						</div>
 					</div>
 				</div>
@@ -182,7 +178,7 @@
 					<f:convertNumber currencySymbol="R$" type="currency"/>
 				</h:outputText>
 			</div>
-			<p:commandButton type="button" value="Finalizar pedido" styleClass="ui-button-raised" />
+			<p:link href="request-data.xhtml"><h3>Finalizar pedido</h3></p:link>
 		</div>
 	</h:form>
 </h:body>
